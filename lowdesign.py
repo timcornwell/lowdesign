@@ -4,6 +4,8 @@ import matplotlib
 import random
 import matplotlib.pyplot as plt
 import csv
+import zernike
+from scipy import linalg
 
 class TelUtils:
 
@@ -32,7 +34,7 @@ class TelArray:
 		plt.axes().set_aspect('equal')
 		plt.savefig('Array_%s.pdf' % self.name)
 	
-	def construct(self, name='Stations', rhalo=40, rcore=2.5, nstations=512, nhalo=45, nantennas=256, fobs=1e8, diameter=0.35):
+	def construct(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=45, nantennas=256, fobs=1e8, diameter=0.035):
 		self.name=name
 		self.rhalo=rhalo
 		self.rcore=rcore
@@ -88,7 +90,9 @@ class TelArray:
 					self.stations['y'][station]=y
 					station=station+1
 		
-	def readLOFAR(self, name='LOFAR', stationtype='S', band='HBA', lfdef='LOFAR.csv'):
+	def readLOFAR(self, name='LOFAR', stationtype='S', band='HBA', lfdef='LOFAR.csv', lat=52.7):
+		cs=numpy.cos(numpy.pi*lat/180.0)
+		sn=numpy.sin(numpy.pi*lat/180.0)
 		self.name=name
 		self.nstations=0
 		self.stations={}
@@ -119,10 +123,11 @@ class TelArray:
 			for row in reader:
 				type=row[0]
 				if (type.find(stationtype) > -1) and (type.find(band) > -1):
-					x=(float(row[2])-meanx)
-					y=(float(row[1])-meany)
-					self.stations['x'][station]=x/1000.0
-					self.stations['y'][station]=y/1000.0
+					x=(float(row[2])-meanx)/1000.0
+					y=(float(row[1])-meany)/1000.0
+					z=(float(row[3])-meanz)/1000.0
+					self.stations['x'][station]=x
+					self.stations['y'][station]=-cs*y+sn*z
 					station=station+1
 
 	def assess(self):
@@ -210,12 +215,37 @@ class TelPiercings:
 			self.piercings['x'][source*array.nstations:(source+1)*array.nstations]=self.hiono*sources.sources['x'][source]+array.stations['x']
 			self.piercings['y'][source*array.nstations:(source+1)*array.nstations]=self.hiono*sources.sources['y'][source]+array.stations['y']
 
-	def assess(self):
-		return 1.0
+	def assess(self, rmax=30.0, nnoll=100):
+		A=numpy.zeros([self.npiercings, nnoll])
+		for piercing in range(self.npiercings):
+			x=self.piercings['x'][piercing]
+			y=self.piercings['y'][piercing]
+			r=numpy.sqrt(x*x+y*y)
+			phi=numpy.arctan2(y,x)
+			if(r<rmax):
+				for noll in range(nnoll):
+					A[piercing,noll]=zernike.zernikel(noll,r/rmax,phi)
+		Covar_A=numpy.zeros([nnoll, nnoll])
+		for nnol1 in range(nnoll):
+			for nnol2 in range(nnoll):
+				Covar_A[nnol1,nnol2]=numpy.sum(A[...,nnol1]*A[...,nnol2])
+		U,s,Vh = linalg.svd(Covar_A)
+		plt.clf()
+		plt.title('Piercings %s' % self.name)
+		plt.xlabel('Singular vector index')
+		plt.ylabel('Singular value')
+		plt.semilogy(s, '.')
+		plt.savefig('Piercings_SVD_%s.pdf' % self.name)
 	
 
+#
+# Radius=1/2 FWZ ~ FWHM
+#
+ts=TelSources()
+ts.construct(nsources=33, radius=6.0/35.0)
+
 lowrand=TelArray()
-lowrand.construct('LOW_RANDOM', nstations=512, rhalo=20)
+lowrand.construct('LOW_RANDOM', nstations=1024, nhalo=45, rhalo=30)
 lowrand.plot()
 
 low=TelArray()
@@ -225,21 +255,19 @@ low.plot()
 lofar=TelArray()
 lofar.readLOFAR('LOFAR')
 lofar.plot()
-#
-# Radius=1/2 FWZ ~ FWHM
-#
-ts=TelSources()
-ts.construct(nsources=33, radius=3.0/35.0)
 
 tp=TelPiercings()
-tp.construct(ts,lowrand)
+tp.construct(ts,lowrand,hiono=200)
 tp.plot()
+tp.assess()
 
 tplow=TelPiercings()
 tplow.construct(ts,low,hiono=200)
 tplow.plot()
+tplow.assess()
 
 tplofar=TelPiercings()
 tplofar.construct(ts,lofar,hiono=200)
 tplofar.plot()
+tplofar.assess()
 
