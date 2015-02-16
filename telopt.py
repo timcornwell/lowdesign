@@ -65,7 +65,7 @@ class TelArray:
 		meanx=meanx/self.nstations
 		meany=meany/self.nstations
 		f.close()
-		station=0
+		self.nstations=0
 		scale=6.371e6*numpy.pi/180000.0
 		with open(l1def, 'rU') as f:
 			reader = csv.reader(f)
@@ -78,6 +78,7 @@ class TelArray:
 		
 		self.stations['x']=numpy.zeros(self.nstations)
 		self.stations['y']=numpy.zeros(self.nstations)
+		station=0
 		scale=6.371e6*numpy.pi/180000.0
 		with open(l1def, 'rU') as f:
 			reader = csv.reader(f)
@@ -202,12 +203,12 @@ class TelPiercings:
 		plt.ylabel('Y (km)')
 		plt.plot(self.piercings['x'], self.piercings['y'], '.')
 		plt.axes().set_aspect('equal')
-		plt.savefig('Piercings_%s.pdf' % self.name)
+		plt.savefig('%s.pdf' % self.name)
 	
 	def construct(self, sources, array, hiono=400):
-		self.name='Piercings_%s_%s' % (sources.name, array.name)
 		self.hiono=hiono
 		self.npiercings=sources.nsources*array.nstations
+		self.name='Piercings_%d_%s_%s' % (sources.nsources, sources.name, array.name)
 		self.piercings={}
 		self.piercings['x']=numpy.zeros(self.npiercings)
 		self.piercings['y']=numpy.zeros(self.npiercings)
@@ -215,7 +216,7 @@ class TelPiercings:
 			self.piercings['x'][source*array.nstations:(source+1)*array.nstations]=self.hiono*sources.sources['x'][source]+array.stations['x']
 			self.piercings['y'][source*array.nstations:(source+1)*array.nstations]=self.hiono*sources.sources['y'][source]+array.stations['y']
 
-	def assess(self, rmax=30.0, nnoll=100):
+	def assess(self, rmax=60.0, nnoll=20):
 		A=numpy.zeros([self.npiercings, nnoll])
 		for piercing in range(self.npiercings):
 			x=self.piercings['x'][piercing]
@@ -231,43 +232,9 @@ class TelPiercings:
 				Covar_A[nnol1,nnol2]=numpy.sum(A[...,nnol1]*A[...,nnol2])
 		U,s,Vh = linalg.svd(Covar_A)
 		plt.clf()
-		plt.title('Piercings %s' % self.name)
+		plt.title(self.name)
 		plt.xlabel('Singular vector index')
 		plt.ylabel('Singular value')
 		plt.semilogy(s, '.')
-		plt.savefig('Piercings_SVD_%s.pdf' % self.name)
+		plt.savefig('%s_SVD.pdf' % self.name)
 	
-
-#
-# Radius=1/2 FWZ ~ FWHM
-#
-ts=TelSources()
-ts.construct(nsources=33, radius=6.0/35.0)
-
-lowrand=TelArray()
-lowrand.construct('LOW_RANDOM', nstations=1024, nhalo=45, rhalo=30)
-lowrand.plot()
-
-low=TelArray()
-low.readLOWL1('LOW_L1')
-low.plot()
-
-lofar=TelArray()
-lofar.readLOFAR('LOFAR')
-lofar.plot()
-
-tp=TelPiercings()
-tp.construct(ts,lowrand,hiono=200)
-tp.plot()
-tp.assess()
-
-tplow=TelPiercings()
-tplow.construct(ts,low,hiono=200)
-tplow.plot()
-tplow.assess()
-
-tplofar=TelPiercings()
-tplofar.construct(ts,lofar,hiono=200)
-tplofar.plot()
-tplofar.assess()
-
