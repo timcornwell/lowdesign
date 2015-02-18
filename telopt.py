@@ -49,7 +49,7 @@ class TelArray:
 		self.stations['x'], self.stations['y']=TelUtils().uniformcircle(self.nstations, self.rhalo)
 		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
 
-	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=49, fobs=1e8, diameter=0.035):
+	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=52, fobs=1e8, diameter=0.035):
 		self.name=name
 		self.rhalo=rhalo
 		self.rcore=rcore
@@ -57,19 +57,21 @@ class TelArray:
 		ncore=self.nstations-nhalo
 		self.fobs=fobs
 		self.diameter=diameter
-		if nhalo==49:
-			self.nrings=3
-			self.r=[rhalo/3.0, 2*rhalo/3.0, rhalo]
-			self.nonring=[9, 19, 27]
-		if nhalo==184:
-			self.nrings=6
-			self.r=[rhalo/6.0, 2*rhalo/6.0, 3.0*rhalo/6.0, 4.0*rhalo/6.0, 5.0*rhalo/6.0, rhalo]
-			self.nonring=[9, 19, 27, 35, 43, 51]
+		if nhalo==60:
+			self.nrings=4
+			self.r=[0.0, rhalo/3.0, 2*rhalo/3.0, rhalo]
+			self.nonring=[1, 9, 21, 29]
+		else:
+			nhalo=185
+			self.nrings=7
+			self.r=[0.0, rhalo/6.0, 2*rhalo/6.0, 3.0*rhalo/6.0, 4.0*rhalo/6.0, 5.0*rhalo/6.0, rhalo]
+			self.nonring=[1, 9, 19, 27, 35, 43, 51]
+		self.nstations=nhalo
 		self.stations={}
 		self.stations['x']=numpy.zeros(self.nstations)
 		self.stations['y']=numpy.zeros(self.nstations)
-		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
-		station=ncore
+# 		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
+		station=0
 		for ring in range(self.nrings):
 			dphi=2*numpy.pi/self.nonring[ring]
 			phi=0.0
@@ -78,7 +80,6 @@ class TelArray:
 				self.stations['y'][station]=self.r[ring]*numpy.sin(phi)
 				phi=phi+dphi
 				station=station+1
-		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
 
 	def shakehalo(self, rshake):
 		for station in range(self.nstations):
@@ -222,6 +223,8 @@ class TelSources:
 		self.name=name
 		self.sources={}
 		self.sources['x'], self.sources['y']=TelUtils().uniformcircle(nsources, radius)
+		self.sources['x']=self.sources['x']-numpy.sum(self.sources['x'])/float(nsources)
+		self.sources['y']=self.sources['y']-numpy.sum(self.sources['y'])/float(nsources)
 		self.nsources=nsources
 		self.radius=radius
 
@@ -240,23 +243,25 @@ class TelPiercings:
 		self.npiercings=0
 		self.hiono=400
 	
-	def plot(self):
+	def plot(self, rmax=70):
 		plt.clf()
 		plt.title('Piercings %s' % self.name)
 		plt.xlabel('X (km)')
 		plt.ylabel('Y (km)')
 		plt.plot(self.piercings['x'], self.piercings['y'], '.')
 		plt.axes().set_aspect('equal')
+		circ=plt.Circle((0,0), radius=rmax, color='g', fill=False)
+		fig = plt.gcf()
+		fig.gca().add_artist(circ)
 		plt.savefig('%s.pdf' % self.name)
 	
 	def construct(self, sources, array, rmin=1, hiono=400):
 		self.hiono=hiono
 		r2=array.stations['x']*array.stations['x']+array.stations['y']*array.stations['y']
 		outside={}
-		outside['x']=array.stations['x'][r2>rmin*rmin]
-		outside['y']=array.stations['y'][r2>rmin*rmin]
+		outside['x']=array.stations['x'][r2>=rmin*rmin]
+		outside['y']=array.stations['y'][r2>=rmin*rmin]
 		nstations=len(outside['x'])
-# 		print "Selected ", nstations, " outside the core ", rmin, " km"
 		self.npiercings=sources.nsources*nstations
 		self.name='Piercings_%d_%s_%s' % (sources.nsources, sources.name, array.name)
 		self.piercings={}
@@ -266,7 +271,7 @@ class TelPiercings:
 			self.piercings['x'][source*nstations:(source+1)*nstations]=self.hiono*sources.sources['x'][source]+outside['x']
 			self.piercings['y'][source*nstations:(source+1)*nstations]=self.hiono*sources.sources['y'][source]+outside['y']
 
-	def assess(self, rmax=60.0, nnoll=20,doplot=True):
+	def assess(self, rmax=70.0, nnoll=20,doplot=True):
 		A=numpy.zeros([self.npiercings, nnoll])
 		for piercing in range(self.npiercings):
 			x=self.piercings['x'][piercing]
@@ -284,7 +289,7 @@ class TelPiercings:
 		shalf=s[nnoll/2-1]
 		if doplot:
 			plt.clf()
-			plt.title('%s rmax=%d shalf=%d' % (self.name, rmax, shalf))
+			plt.title('%s rmax=%d shalf=%f' % (self.name, rmax, shalf))
 			plt.xlabel('Singular vector index')
 			plt.ylabel('Singular value')
 			plt.semilogy(s, '.')
