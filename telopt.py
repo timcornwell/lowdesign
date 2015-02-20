@@ -61,6 +61,10 @@ class TelArray:
 			self.nrings=4
 			self.r=[0.0, rhalo/3.0, 2*rhalo/3.0, rhalo]
 			self.nonring=[1, 9, 21, 29]
+		elif nhalo==44:
+			self.nrings=4
+			self.r=[0.0, rhalo/3.0, 2*rhalo/3.0, rhalo]
+			self.nonring=[1, 7, 13, 23]
 		else:
 			nhalo=185
 			self.nrings=7
@@ -92,6 +96,50 @@ class TelArray:
 				self.stations['x'][station]=self.rhalo*self.stations['x'][station]/r
 				self.stations['y'][station]=self.rhalo*self.stations['y'][station]/r
 				
+
+	def readLOWBD(self, name='LOWBD', rcore=0.0, l1def='SKA-low_config_baseline_design_arm_stations_2013apr30.csv'):
+		self.name=name
+		self.nstations=0
+		self.stations={}
+		self.rhalo=80
+		self.fobs=1e8
+		self.diameter=35.0
+		meanx=0
+		meany=0
+		with open(l1def, 'rU') as f:
+			reader = csv.reader(f)
+			for row in reader:
+				meanx=meanx+float(row[1])
+				meany=meany+float(row[0])
+				self.nstations=self.nstations+1
+		meanx=meanx/self.nstations
+		meany=meany/self.nstations
+		f.close()
+		self.nstations=0
+		scale=0.001
+		with open(l1def, 'rU') as f:
+			reader = csv.reader(f)
+			for row in reader:
+				x=scale*(float(row[1])-meanx)
+				y=scale*(float(row[0])-meany)
+				r=numpy.sqrt(x*x+y*y)
+				if r>rcore:
+					self.nstations=self.nstations+1
+		
+		self.stations['x']=numpy.zeros(self.nstations)
+		self.stations['y']=numpy.zeros(self.nstations)
+		station=0
+		with open(l1def, 'rU') as f:
+			reader = csv.reader(f)
+			for row in reader:
+				x=scale*(float(row[1])-meanx)
+				y=scale*(float(row[0])-meany)
+				r=numpy.sqrt(x*x+y*y)
+				if r>rcore:
+					self.stations['x'][station]=x
+					self.stations['y'][station]=y
+					station=station+1
+		
 	def readLOWL1(self, name='LOWL1', rcore=0.0, l1def='L1_configuration.csv'):
 		self.name=name
 		self.nstations=0

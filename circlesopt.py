@@ -6,7 +6,7 @@ from telopt import *
 ts=TelSources()
 
 shalfcircles=numpy.zeros(10)
-shalflowl1=numpy.zeros(10)
+shalflowbd=numpy.zeros(10)
 shalflofar=numpy.zeros(10)
 
 ntrials=100
@@ -19,9 +19,10 @@ lowrand.shakehalo(rshake=5.0)
 lowrand.plot()
 tuv.construct(lowrand);tuv.plot()
 
-lowl1=TelArray()
-lowl1.readLOWL1('LOW_L1')
-tuv.construct(lowl1);tuv.plot()
+lowbd=TelArray()
+lowbd.readLOWBD('LOWBD')
+lowbd.plot()
+tuv.construct(lowbd);tuv.plot()
 
 lofar=TelArray()
 lofar.readLOFAR('LOFAR')
@@ -37,23 +38,23 @@ for nsources in range(1,10):
 		tp.construct(ts,lowrand,hiono=300,rmin=0)
 		if trial==0:
 			tp.plot(rmax=50)
-		shalfcircles[nsources]=shalfcircles[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50)
+		shalfcircles[nsources]=shalfcircles[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50, doplot=(trial==0))
 	
-		tp.construct(ts,lowl1,hiono=300,rmin=2.5)
+		tp.construct(ts,lowbd,hiono=300,rmin=2.5)
 		if trial==0:
 			tp.plot(rmax=50)
-		shalflowl1[nsources]=shalflowl1[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50)
+		shalflowbd[nsources]=shalflowbd[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50, doplot=(trial==0))
 	
 		tp.construct(ts,lofar,hiono=300,rmin=2.5)
 		if trial==0:
 			tp.plot(rmax=50)
-		shalflofar[nsources]=shalflofar[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50)
+		shalflofar[nsources]=shalflofar[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50, doplot=(trial==0))
 	
 plt.clf()
 plt.plot(shalfcircles, color='r')
-plt.plot(shalflowl1, color='g')
+plt.plot(shalflowbd, color='g')
 plt.plot(shalflofar, color='b')
-plt.title('Shalf (r:circles, g:Low_L1, and b:LOFAR)')
+plt.title('Shalf (r:circles, g:BD, and b:LOFAR)')
 plt.xlabel('Number of sources')
 plt.ylabel('Shalf')
 plt.savefig('shalf.pdf')
