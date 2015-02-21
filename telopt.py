@@ -49,7 +49,7 @@ class TelArray:
 		self.stations['x'], self.stations['y']=TelUtils().uniformcircle(self.nstations, self.rhalo)
 		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
 
-	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=52, fobs=1e8, diameter=0.035):
+	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=44, fobs=1e8, diameter=0.035):
 		self.name=name
 		self.rhalo=rhalo
 		self.rcore=rcore

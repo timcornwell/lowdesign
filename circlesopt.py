@@ -5,11 +5,14 @@ from telopt import *
 #
 ts=TelSources()
 
-shalfcircles=numpy.zeros(10)
-shalflowbd=numpy.zeros(10)
-shalflofar=numpy.zeros(10)
+nsources=20
 
-ntrials=100
+shalfcircles=numpy.zeros(nsources)
+shalflowbd=numpy.zeros(nsources)
+shalflofar=numpy.zeros(nsources)
+
+ntrials=10
+rmax=50
 
 tuv=TelUV()
 
@@ -31,24 +34,24 @@ tuv.construct(lofar);tuv.plot()
 
 tp=TelPiercings()
 
-for nsources in range(1,10):
-	ts.construct(nsources=nsources, radius=6.0/35.0)
-	random.seed(781490893)
+random.seed(781490893)
+for nsources in range(1,nsources):
+	ts.construct(nsources=nsources, radius=3.0/35.0)
 	for trial in range(ntrials):
 		tp.construct(ts,lowrand,hiono=300,rmin=0)
 		if trial==0:
-			tp.plot(rmax=50)
-		shalfcircles[nsources]=shalfcircles[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50, doplot=(trial==0))
+			tp.plot(rmax=rmax)
+		shalfcircles[nsources]=shalfcircles[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
 	
 		tp.construct(ts,lowbd,hiono=300,rmin=2.5)
 		if trial==0:
-			tp.plot(rmax=50)
-		shalflowbd[nsources]=shalflowbd[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50, doplot=(trial==0))
+			tp.plot(rmax=rmax)
+		shalflowbd[nsources]=shalflowbd[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
 	
 		tp.construct(ts,lofar,hiono=300,rmin=2.5)
 		if trial==0:
-			tp.plot(rmax=50)
-		shalflofar[nsources]=shalflofar[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=50, doplot=(trial==0))
+			tp.plot(rmax=rmax)
+		shalflofar[nsources]=shalflofar[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
 	
 plt.clf()
 plt.plot(shalfcircles, color='r')
