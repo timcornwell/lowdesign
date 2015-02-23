@@ -224,6 +224,12 @@ class TelArray:
 					self.stations['y'][station]=-cs*y+sn*z
 					station=station+1
 
+	def save(self, filename='LOWBD.csv'):
+		with open(filename, 'wb') as fp:
+			rowwriter = csv.writer(fp)
+			for station in range(self.nstations):
+				rowwriter.writerow([1000.0*self.stations['x'][station],1000.0*self.stations['y'][station]])
+		
 	def assess(self):
 		return 1.0
 	

@@ -20,17 +20,23 @@ lowrand=TelArray()
 lowrand.circles('LOW_CIRCLES', nstations=1024, nhalo=60, rhalo=40.0)
 lowrand.shakehalo(rshake=5.0)
 lowrand.plot()
+lowrand.save('LOW_CIRCLES_OPT.csv')
 tuv.construct(lowrand);tuv.plot()
 
 lowbd=TelArray()
 lowbd.readLOWBD('LOWBD')
 lowbd.plot()
+lowbd.save('LOWBD_OPT.csv')
 tuv.construct(lowbd);tuv.plot()
 
 lofar=TelArray()
 lofar.readLOFAR('LOFAR')
 lofar.plot()
+lofar.save('LOFAR_OPT.csv')
 tuv.construct(lofar);tuv.plot()
+
+exit()
+
 
 tp=TelPiercings()
 
@@ -43,12 +49,12 @@ for nsources in range(1,nsources):
 			tp.plot(rmax=rmax)
 		shalfcircles[nsources]=shalfcircles[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
 	
-		tp.construct(ts,lowbd,hiono=300,rmin=2.5)
+		tp.construct(ts,lowbd,hiono=300,rmin=1.8)
 		if trial==0:
 			tp.plot(rmax=rmax)
 		shalflowbd[nsources]=shalflowbd[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
 	
-		tp.construct(ts,lofar,hiono=300,rmin=2.5)
+		tp.construct(ts,lofar,hiono=300,rmin=1.8)
 		if trial==0:
 			tp.plot(rmax=rmax)
 		shalflofar[nsources]=shalflofar[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
