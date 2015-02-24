@@ -61,10 +61,10 @@ class TelArray:
 			self.nrings=4
 			self.r=[0.0, rhalo/3.0, 2*rhalo/3.0, rhalo]
 			self.nonring=[1, 9, 21, 29]
-		elif nhalo==44:
+		elif nhalo==46:
 			self.nrings=4
 			self.r=[0.0, rhalo/3.0, 2*rhalo/3.0, rhalo]
-			self.nonring=[1, 7, 13, 23]
+			self.nonring=[1, 9, 13, 23]
 		else:
 			nhalo=185
 			self.nrings=7
