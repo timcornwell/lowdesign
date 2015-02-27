@@ -9,7 +9,6 @@ from scipy import linalg
 
 random.seed(781490893)
 
-
 class TelUtils:
 
 	def uniformcircle(self, n, rhalo=1.0):
@@ -37,7 +36,7 @@ class TelArray:
 		plt.axes().set_aspect('equal')
 		plt.savefig('Array_%s.pdf' % self.name)
 	
-	def construct(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=45, nantennas=256, fobs=1e8, diameter=0.035):
+	def random(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=45, nantennas=256, fobs=1e8, diameter=0.035):
 		self.name=name
 		self.rhalo=rhalo
 		self.rcore=rcore
@@ -89,8 +88,12 @@ class TelArray:
 		for station in range(self.nstations):
 			r=numpy.sqrt(self.stations['x'][station]*self.stations['x'][station]+self.stations['y'][station]*self.stations['y'][station])
 			if r>self.rcore:
-				self.stations['x'][station]=self.stations['x'][station]+random.uniform(-rshake,rshake)
-				self.stations['y'][station]=self.stations['y'][station]+random.uniform(-rshake,rshake)
+				phi=2*numpy.pi*random.random()
+				r=rshake*numpy.sqrt(random.random())
+				dx=r*numpy.cos(phi)
+				dy=r*numpy.sin(phi)
+				self.stations['x'][station]=self.stations['x'][station]+dx
+				self.stations['y'][station]=self.stations['y'][station]+dy
 			r=numpy.sqrt(self.stations['x'][station]*self.stations['x'][station]+self.stations['y'][station]*self.stations['y'][station])
 			if r>self.rhalo:
 				self.stations['x'][station]=self.rhalo*self.stations['x'][station]/r

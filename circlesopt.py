@@ -18,10 +18,9 @@ rmax=50
 tuv=TelUV()
 
 lowrand=TelArray()
-lowrand.circles('LOW_CIRCLES', nstations=1024, nhalo=60, rhalo=40.0)
-lowrand.shakehalo(rshake=5.0)
+lowrand.circles('LOW_CIRCLES', nstations=1024, nhalo=46, rhalo=40.0)
 lowrand.plot()
-lowrand.save('LOW_CIRCLES_OPT.csv')
+lowrand.save('LOW_CIRCLES.csv')
 tuv.construct(lowrand);tuv.plot()
 
 lowrand46=TelArray()
@@ -70,11 +69,10 @@ for nsources in range(1,nsources):
 		shalflofar[nsources]=shalflofar[nsources]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
 	
 plt.clf()
-plt.plot(shalfcircles, color='r')
-plt.plot(shalfcircles46, color='r', linestyle='--')
+# plt.plot(shalfcircles, color='r')
+plt.plot(shalfcircles46, color='r')
 plt.plot(shalflowbd, color='g')
 plt.plot(shalflofar, color='b')
-plt.plot(shalfcircles46, color='r')
 plt.title('Shalf (r:circles, g:BD, and b:LOFAR)')
 plt.xlabel('Number of sources')
 plt.ylabel('Shalf')
