@@ -312,7 +312,7 @@ class TelPiercings:
 		fig.gca().add_artist(circ)
 		plt.savefig('%s.pdf' % self.name)
 	
-	def construct(self, sources, array, rmin=1, hiono=400):
+	def construct(self, sources, array, rmin=1, hiono=300):
 		self.hiono=hiono
 		r2=array.stations['x']*array.stations['x']+array.stations['y']*array.stations['y']
 		outside={}

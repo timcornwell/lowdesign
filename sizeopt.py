@@ -21,6 +21,7 @@ for isize in range(nsizesmax):
 	sizes[isize]=size
 	lowrand=TelArray()
 	lowrand.circles('LOW_CIRCLE_diameter=%d' % size, nstations=46, nhalo=46, rhalo=rmax)
+	lowrand.shakehalo(rshake=5.0)
 # 	lowrand.plot()
 # 	tuv.construct(lowrand);tuv.plot()
 
