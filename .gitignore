@@ -6,3 +6,7 @@
 *.xls
 
 *.pyc
+
+*.graffle
+
+simulations/

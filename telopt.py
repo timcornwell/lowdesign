@@ -232,6 +232,69 @@ class TelArray:
 			rowwriter = csv.writer(fp)
 			for station in range(self.nstations):
 				rowwriter.writerow([1000.0*self.stations['x'][station],1000.0*self.stations['y'][station]])
+				
+	def readKML(self, kmlfile="LOW_CIRCLES.kml"):
+	
+		long0=116.779167
+		lat0=-26.789267
+		Re=6371.0
+		self.stations={}
+		self.stations['x']=numpy.zeros(46)
+		self.stations['y']=numpy.zeros(46)
+		self.name=kmlfile
+		f=open(kmlfile)
+		nstations=0
+		for line in f:
+			line=line.lstrip()
+			if line.find("name")>0:
+				if line.find("Station")>0:
+					station=int(line.split('Station')[1].split('<')[0])
+			if line.find("coordinates")>0:
+				x= float(line.split('>')[1].split('<')[0].split(',')[0])
+				y= float(line.split('>')[1].split('<')[0].split(',')[1])
+				self.stations['x'][station]=(x-long0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
+				self.stations['y'][station]=(y-lat0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
+		self.nstations=nstations
+				
+	def writeKML(self, kmlfile="LOW_CIRCLES.kml"):
+	
+		long0=116.779167
+		lat0=-26.789267
+		Re=6371.0
+		s=['<?xml version="1.0" encoding="UTF-8"?>', \
+			'<kml xmlns="http://www.opengis.net/kml/2.2">', \
+			'<Document>', \
+			'<Style id="whitecirc">', \
+			'<IconStyle>', \
+			'<Icon>', \
+			'<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>', \
+			'</Icon>', \
+			'</IconStyle>', \
+			'</Style>', \
+			'<!--name></name-->']
+		l=['<Placemark>', \
+			'<styleUrl>#whitecirc</styleUrl>', \
+			'<name>Station %d</name>', \
+			'<Point>', \
+			'<coordinates>%f, %f</coordinates>', \
+			'</Point>', \
+			'</Placemark>']
+		e=['</Document>', '</kml>']
+		f=open(kmlfile, 'w')
+		for ss in s:
+			f.write(ss)
+		for station in range(self.nstations):
+			long= long0+180.0*self.stations['x'][station]*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
+			lat = lat0 -180.0*self.stations['y'][station]*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
+			f.write( l[0])
+			f.write( l[1])
+			f.write( l[2] % station)
+			f.write( l[3])
+			f.write( l[4] % (long, lat))
+			f.write( l[5])
+			f.write( l[6])
+		f.write( e[0])
+		f.write( e[1])
 		
 	def assess(self):
 		return 1.0
@@ -343,13 +406,18 @@ class TelPiercings:
 			for nnol2 in range(nnoll):
 				Covar_A[nnol1,nnol2]=numpy.sum(A[...,nnol1]*A[...,nnol2])
 		U,s,Vh = linalg.svd(Covar_A)
-		shalf=s[nnoll/2-1]
+		c15=nnoll
+		for i in range(nnoll):
+			if s[i]<0.01*s[0]:
+				c15=i
+				break
 		if doplot:
 			plt.clf()
-			plt.title('%s rmax=%d shalf=%f' % (self.name, rmax, shalf))
+			plt.title('%s rmax=%d c15=%d' % (self.name, rmax, c15))
 			plt.xlabel('Singular vector index')
 			plt.ylabel('Singular value')
-			plt.semilogy(s, '.')
+			plt.plot(s/s[0], '.')
+			plt.ylim(0.0,0.4)
 			plt.savefig('%s_rmax=%d_SVD.pdf' % (self.name, rmax))
-		return shalf
+		return c15
 	

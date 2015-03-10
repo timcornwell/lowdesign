@@ -1,0 +1,1137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>LOW_CIRCLE_diameter=30.kml</name>
+	<open>1</open>
+	<Style id="whitecirc68">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc62">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc40">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc44">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc75">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc32">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc16">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc59">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc31">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc67</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc19</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc13">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc51</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc40</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc440">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc448</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc4413</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc12">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc10">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc67">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc9">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc441">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc444</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc443</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc65">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc18">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc56</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc7</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc28">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc43">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc32</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc75</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc79">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc72">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc27">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc52</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc79</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc54">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc2</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc64</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc74">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc25</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc28</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc442">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc58">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc62</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc66</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc443">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc444">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc71">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc45</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc29</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc445">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc48">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc80">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc30">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc51">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc73">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc10</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc30</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc25">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc446">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc29">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc55">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc53">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc15</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc20</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc447">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc63">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc50">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc41">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc64">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc57">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc17">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc46</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc26</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc0">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc34">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc24</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc33</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc448">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc78">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc69</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc80</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc56">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc61">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc7">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc3">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc5">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc9</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc41</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc11">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc449">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc20">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc21">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc23">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc4410">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc442</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc446</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc4411">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc37">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc76</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc46">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc45">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc4">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc21</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc16</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc35">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc65</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc68</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc42">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc23</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc63</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc38">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc61</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc3</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc60">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc11</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc55</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc70">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc8</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc48</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc66">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc4412">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc4415</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc44</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc4413">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc2">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc26">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc4414">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc449</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc445</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc36">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc52">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc76">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc15">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc33">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc4415">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc22">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc12</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc39</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc39">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc6">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc57</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc72</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc1">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc36</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc4416">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc4411</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc447</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc4417">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<StyleMap id="whitecirc77">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc50</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc59</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="whitecirc14">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#whitecirc47</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#whitecirc49</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="whitecirc8">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc47">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc49">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc19">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc69">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Style id="whitecirc24">
+		<IconStyle>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+			</Icon>
+		</IconStyle>
+	</Style>
+	<Placemark>
+		<name>Station 0</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.779167,-26.789267,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 1</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.883479,-26.789509,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 2</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.902925,-26.852502,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 3</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.806534,-26.902429,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 4</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.733738,-26.934936,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 5</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.648931,-26.804405,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 6</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.670039,-26.764283,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 7</name>
+		<styleUrl>#whitecirc441</styleUrl>
+		<Point>
+			<coordinates>116.6871970542414,-26.64142156901545,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 8</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.822074,-26.657968,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 9</name>
+		<styleUrl>#whitecirc4</styleUrl>
+		<Point>
+			<coordinates>116.5721780179712,-26.51162822945549,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 10</name>
+		<styleUrl>#whitecirc31</styleUrl>
+		<Point>
+			<coordinates>116.9714159742613,-26.75973042846775,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 11</name>
+		<styleUrl>#whitecirc78</styleUrl>
+		<Point>
+			<coordinates>116.878316853638,-26.73264556018653,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 12</name>
+		<styleUrl>#whitecirc73</styleUrl>
+		<Point>
+			<coordinates>116.6957760050063,-26.86872340135571,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 13</name>
+		<styleUrl>#whitecirc4414</styleUrl>
+		<Point>
+			<coordinates>116.684114055173,-26.91058082575769,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 14</name>
+		<styleUrl>#whitecirc4410</styleUrl>
+		<Point>
+			<coordinates>116.7107184198486,-27.03928215253918,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 15</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.563136,-26.991852,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 16</name>
+		<styleUrl>#whitecirc27</styleUrl>
+		<Point>
+			<coordinates>116.540865762514,-26.8945439653383,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 17</name>
+		<styleUrl>#whitecirc17</styleUrl>
+		<Point>
+			<coordinates>116.5768072730404,-26.77768642407572,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 18</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.56165,-26.620827,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 19</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.708311,-26.555613,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 20</name>
+		<styleUrl>#whitecirc58</styleUrl>
+		<Point>
+			<coordinates>116.6461313497909,-26.59439437206721,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 21</name>
+		<styleUrl>#whitecirc70</styleUrl>
+		<Point>
+			<coordinates>116.4500358996691,-26.49940764586453,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 22</name>
+		<styleUrl>#whitecirc34</styleUrl>
+		<Point>
+			<coordinates>116.9886873315425,-26.66088761843065,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 23</name>
+		<styleUrl>#whitecirc53</styleUrl>
+		<Point>
+			<coordinates>117.0321710487357,-26.71896379158127,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 24</name>
+		<styleUrl>#whitecirc37</styleUrl>
+		<Point>
+			<coordinates>116.8187555924006,-26.83071785084647,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 25</name>
+		<styleUrl>#whitecirc5</styleUrl>
+		<Point>
+			<coordinates>116.6799505111979,-26.98427019031737,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 26</name>
+		<styleUrl>#whitecirc13</styleUrl>
+		<Point>
+			<coordinates>116.6305484562964,-26.91414495143058,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 27</name>
+		<styleUrl>#whitecirc43</styleUrl>
+		<Point>
+			<coordinates>116.7689138707616,-26.87899091191709,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 28</name>
+		<styleUrl>#whitecirc1</styleUrl>
+		<Point>
+			<coordinates>116.770582401769,-26.71796963611433,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 29</name>
+		<styleUrl>#whitecirc35</styleUrl>
+		<Point>
+			<coordinates>116.5574989814262,-26.71655974039417,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 30</name>
+		<styleUrl>#whitecirc6</styleUrl>
+		<Point>
+			<coordinates>116.6356235386864,-26.97847303142488,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 31</name>
+		<LookAt>
+			<longitude>116.8819053738455</longitude>
+			<latitude>-26.74373983773216</latitude>
+			<altitude>0</altitude>
+			<heading>-0.1533901281873937</heading>
+			<tilt>0</tilt>
+			<range>125867.3840749128</range>
+			<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+		</LookAt>
+		<styleUrl>#whitecirc18</styleUrl>
+		<Point>
+			<coordinates>116.4898764229184,-26.92946892912471,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 32</name>
+		<styleUrl>#whitecirc4412</styleUrl>
+		<Point>
+			<coordinates>116.499614392884,-27.02101851297182,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 33</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.425011,-26.978198,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 34</name>
+		<styleUrl>#whitecirc38</styleUrl>
+		<Point>
+			<coordinates>116.6289848848987,-27.01905940698515,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 35</name>
+		<styleUrl>#whitecirc42</styleUrl>
+		<Point>
+			<coordinates>116.6579965913268,-26.70449380634662,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 36</name>
+		<styleUrl>#whitecirc14</styleUrl>
+		<Point>
+			<coordinates>116.5682584999238,-26.56977936973293,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 37</name>
+		<styleUrl>#whitecirc4417</styleUrl>
+		<Point>
+			<coordinates>116.485554,-26.534021,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 38</name>
+		<styleUrl>#whitecirc440</styleUrl>
+		<Point>
+			<coordinates>116.7423101771357,-26.8300246460422,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 39</name>
+		<styleUrl>#whitecirc71</styleUrl>
+		<Point>
+			<coordinates>116.6502159436481,-26.49143020697254,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 40</name>
+		<styleUrl>#whitecirc54</styleUrl>
+		<Point>
+			<coordinates>116.6359712416505,-26.53946647725789,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 41</name>
+		<styleUrl>#whitecirc74</styleUrl>
+		<Point>
+			<coordinates>116.6043302468385,-26.59150554143437,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 42</name>
+		<styleUrl>#whitecirc77</styleUrl>
+		<Point>
+			<coordinates>116.5623935337268,-26.66319973918026,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 43</name>
+		<styleUrl>#whitecirc60</styleUrl>
+		<Point>
+			<coordinates>116.6261093336136,-26.66179011542259,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 44</name>
+		<styleUrl>#whitecirc22</styleUrl>
+		<Point>
+			<coordinates>116.9552269385248,-26.73627672395315,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>Station 45</name>
+		<styleUrl>#whitecirc4416</styleUrl>
+		<Point>
+			<coordinates>116.9332265803388,-26.69082154523628,0</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>

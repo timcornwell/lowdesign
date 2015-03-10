@@ -31,7 +31,7 @@ for station in range(1,nstationsmax):
 		tp.construct(ts,lowrand,hiono=300,rmin=2.0)
 		if trial==0:
 			tp.plot(rmax=rmax)
-		shalfrandom[station]=shalfrandom[station]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
+		shalfrandom[station]=max(shalfrandom[station],(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0)))
 	
 plt.clf()
 plt.plot(stations, shalfrandom, color='r')

@@ -5,7 +5,7 @@ from telopt import *
 #
 ts=TelSources()
 
-nsources=20
+nsources=10
 
 ntrials=10
 nsizesmax=17
@@ -33,7 +33,7 @@ for isize in range(nsizesmax):
 		tp.construct(ts,lowrand,hiono=300,rmin=2.0)
 		if trial==0:
 			tp.plot(rmax=rmax)
-		shalfrandom[isize]=shalfrandom[isize]+(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0))
+		shalfrandom[isize]=max(shalfrandom[isize],(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0)))
 	
 plt.clf()
 plt.plot(sizes, shalfrandom, color='r')
