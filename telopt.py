@@ -27,6 +27,13 @@ class TelArray:
 		self.name=''
 		self.construct()
 	
+	def recenter(self):
+		self.center={}
+		self.center['x']=numpy.average(self.stations['x'])
+		self.center['y']=numpy.average(self.stations['y'])
+		self.stations['x']=self.stations['x']-self.center['x']
+		self.stations['y']=self.stations['y']-self.center['y']
+
 	def plot(self):
 		plt.clf()
 		plt.title('Antenna locations %s' % self.name)
@@ -83,6 +90,7 @@ class TelArray:
 				self.stations['y'][station]=self.r[ring]*numpy.sin(phi)
 				phi=phi+dphi
 				station=station+1
+		self.recenter()
 
 	def shakehalo(self, rshake):
 		for station in range(self.nstations):
@@ -98,7 +106,7 @@ class TelArray:
 			if r>self.rhalo:
 				self.stations['x'][station]=self.rhalo*self.stations['x'][station]/r
 				self.stations['y'][station]=self.rhalo*self.stations['y'][station]/r
-				
+		self.recenter()
 
 	def readLOWBD(self, name='LOWBD', rcore=0.0, l1def='SKA-low_config_baseline_design_arm_stations_2013apr30.csv'):
 		self.name=name
@@ -142,7 +150,8 @@ class TelArray:
 					self.stations['x'][station]=x
 					self.stations['y'][station]=y
 					station=station+1
-		
+		self.recenter()
+
 	def readLOWL1(self, name='LOWL1', rcore=0.0, l1def='L1_configuration.csv'):
 		self.name=name
 		self.nstations=0
@@ -186,6 +195,7 @@ class TelArray:
 					self.stations['x'][station]=x
 					self.stations['y'][station]=y
 					station=station+1
+		self.recenter()
 		
 	def readLOFAR(self, name='LOFAR', stationtype='S', band='HBA', lfdef='LOFAR.csv', lat=52.7):
 		cs=numpy.cos(numpy.pi*lat/180.0)
@@ -226,6 +236,7 @@ class TelArray:
 					self.stations['x'][station]=x
 					self.stations['y'][station]=-cs*y+sn*z
 					station=station+1
+		self.recenter()
 
 	def save(self, filename='LOWBD.csv'):
 		with open(filename, 'wb') as fp:
@@ -255,6 +266,7 @@ class TelArray:
 				self.stations['x'][station]=(x-long0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
 				self.stations['y'][station]=(y-lat0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
 		self.nstations=nstations
+		self.recenter()
 				
 	def writeKML(self, kmlfile="LOW_CIRCLES.kml"):
 	
@@ -284,8 +296,8 @@ class TelArray:
 		for ss in s:
 			f.write(ss)
 		for station in range(self.nstations):
-			long= long0+180.0*self.stations['x'][station]*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
-			lat = lat0 -180.0*self.stations['y'][station]*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
+			long= long0+180.0*(self.stations['x'][station]+self.center['x'])*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
+			lat = lat0 -180.0*(self.stations['y'][station]+self.center['y'])*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
 			f.write( l[0])
 			f.write( l[1])
 			f.write( l[2] % station)
@@ -337,9 +349,9 @@ class TelUV:
 class TelSources:
 	def _init_(self):
 		self.name='Sources'
-		self.nsources=10000
+		self.nsources=100
 	
-	def construct(self, name='Sources', nsources=10000, radius=1):
+	def construct(self, name='Sources', nsources=100, radius=1):
 		self.name=name
 		self.sources={}
 		self.sources['x'], self.sources['y']=TelUtils().uniformcircle(nsources, radius)
@@ -406,18 +418,13 @@ class TelPiercings:
 			for nnol2 in range(nnoll):
 				Covar_A[nnol1,nnol2]=numpy.sum(A[...,nnol1]*A[...,nnol2])
 		U,s,Vh = linalg.svd(Covar_A)
-		c15=nnoll
-		for i in range(nnoll):
-			if s[i]<0.01*s[0]:
-				c15=i
-				break
+		c15=numpy.average(s[0:15])
 		if doplot:
 			plt.clf()
-			plt.title('%s rmax=%d c15=%d' % (self.name, rmax, c15))
+			plt.title('%s rmax=%d average SV=%f' % (self.name, rmax, c15))
 			plt.xlabel('Singular vector index')
 			plt.ylabel('Singular value')
-			plt.plot(s/s[0], '.')
-			plt.ylim(0.0,0.4)
+			plt.plot(s, '.')
 			plt.savefig('%s_rmax=%d_SVD.pdf' % (self.name, rmax))
 		return c15
 	
