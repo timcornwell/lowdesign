@@ -1,4 +1,5 @@
 import numpy
+import math
 import scipy
 import matplotlib
 import random
@@ -6,6 +7,7 @@ import matplotlib.pyplot as plt
 import csv
 import zernike
 from scipy import linalg
+import Image
 
 random.seed(781490893)
 
@@ -34,13 +36,19 @@ class TelArray:
 		self.stations['x']=self.stations['x']-self.center['x']
 		self.stations['y']=self.stations['y']-self.center['y']
 
-	def plot(self):
+	def plot(self, rmax=40):
 		plt.clf()
 		plt.title('Antenna locations %s' % self.name)
 		plt.xlabel('X (km)')
 		plt.ylabel('Y (km)')
 		plt.plot(self.stations['x'], self.stations['y'], '.')
 		plt.axes().set_aspect('equal')
+		circ=plt.Circle((0,0), radius=rmax, color='g', fill=False)
+		fig = plt.gcf()
+		fig.gca().add_artist(circ)
+		maxaxis=max(numpy.max(abs(self.stations['x'])), numpy.max(abs(self.stations['y'])))
+		plt.axes().set_xlim([-maxaxis,maxaxis])
+		plt.axes().set_ylim([-maxaxis,maxaxis])
 		plt.savefig('Array_%s.pdf' % self.name)
 	
 	def random(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=45, nantennas=256, fobs=1e8, diameter=0.035):
@@ -54,6 +62,7 @@ class TelArray:
 		self.stations={}
 		self.stations['x'], self.stations['y']=TelUtils().uniformcircle(self.nstations, self.rhalo)
 		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
+		self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 
 	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=44, fobs=1e8, diameter=0.035):
 		self.name=name
@@ -71,6 +80,14 @@ class TelArray:
 			self.nrings=4
 			self.r=[0.0, rhalo/3.0, 2*rhalo/3.0, rhalo]
 			self.nonring=[1, 9, 13, 23]
+		elif nhalo==30:
+			self.nrings=4
+			self.r=[0.0, rhalo/3.0, 2*rhalo/3.0, rhalo]
+			self.nonring=[1, 5, 9, 15]
+		elif nhalo==12:
+			self.nrings=3
+			self.r=[0.0, rhalo/2.0, rhalo]
+			self.nonring=[1, 5, 6]
 		else:
 			nhalo=185
 			self.nrings=7
@@ -80,6 +97,7 @@ class TelArray:
 		self.stations={}
 		self.stations['x']=numpy.zeros(self.nstations)
 		self.stations['y']=numpy.zeros(self.nstations)
+		self.stations['weight']=numpy.zeros(self.nstations)
 # 		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
 		station=0
 		for ring in range(self.nrings):
@@ -88,6 +106,7 @@ class TelArray:
 			for spoke in range(self.nonring[ring]):
 				self.stations['x'][station]=self.r[ring]*numpy.cos(phi)
 				self.stations['y'][station]=self.r[ring]*numpy.sin(phi)
+				self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 				phi=phi+dphi
 				station=station+1
 		self.recenter()
@@ -149,6 +168,7 @@ class TelArray:
 				if r>rcore:
 					self.stations['x'][station]=x
 					self.stations['y'][station]=y
+					self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 					station=station+1
 		self.recenter()
 
@@ -194,6 +214,7 @@ class TelArray:
 				if r>rcore:
 					self.stations['x'][station]=x
 					self.stations['y'][station]=y
+					self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 					station=station+1
 		self.recenter()
 		
@@ -225,6 +246,7 @@ class TelArray:
 		station=0
 		self.stations['x']=numpy.zeros(self.nstations)
 		self.stations['y']=numpy.zeros(self.nstations)
+		self.stations['weight']=numpy.zeros(self.nstations)
 		with open(lfdef, 'rU') as f:
 			reader = csv.reader(f)
 			for row in reader:
@@ -235,6 +257,7 @@ class TelArray:
 					z=(float(row[3])-meanz)/1000.0
 					self.stations['x'][station]=x
 					self.stations['y'][station]=-cs*y+sn*z
+					self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 					station=station+1
 		self.recenter()
 
@@ -244,7 +267,7 @@ class TelArray:
 			for station in range(self.nstations):
 				rowwriter.writerow([1000.0*self.stations['x'][station],1000.0*self.stations['y'][station]])
 				
-	def readKML(self, kmlfile="LOW_CIRCLES.kml"):
+	def readKML(self, name='KML', kmlfile="Boolardy.kml"):
 	
 		long0=116.779167
 		lat0=-26.789267
@@ -252,7 +275,7 @@ class TelArray:
 		self.stations={}
 		self.stations['x']=numpy.zeros(46)
 		self.stations['y']=numpy.zeros(46)
-		self.name=kmlfile
+		self.name=name
 		f=open(kmlfile)
 		nstations=0
 		for line in f:
@@ -265,6 +288,7 @@ class TelArray:
 				y= float(line.split('>')[1].split('<')[0].split(',')[1])
 				self.stations['x'][station]=(x-long0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
 				self.stations['y'][station]=(y-lat0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
+				self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 		self.nstations=nstations
 		self.recenter()
 				
@@ -355,6 +379,7 @@ class TelSources:
 		self.name=name
 		self.sources={}
 		self.sources['x'], self.sources['y']=TelUtils().uniformcircle(nsources, radius)
+
 		self.sources['x']=self.sources['x']-numpy.sum(self.sources['x'])/float(nsources)
 		self.sources['y']=self.sources['y']-numpy.sum(self.sources['y'])/float(nsources)
 		self.nsources=nsources
@@ -365,7 +390,6 @@ class TelSources:
 	
 	def assess(self):
 		return 1.0
-	
 #
 # Piercings through the ionosphere
 #
@@ -385,6 +409,9 @@ class TelPiercings:
 		circ=plt.Circle((0,0), radius=rmax, color='g', fill=False)
 		fig = plt.gcf()
 		fig.gca().add_artist(circ)
+		maxaxis=max(numpy.max(abs(self.piercings['x'])), numpy.max(abs(self.piercings['y'])))
+		plt.axes().set_xlim([-maxaxis,maxaxis])
+		plt.axes().set_ylim([-maxaxis,maxaxis])
 		plt.savefig('%s.pdf' % self.name)
 	
 	def construct(self, sources, array, rmin=1, hiono=300):
@@ -399,32 +426,47 @@ class TelPiercings:
 		self.piercings={}
 		self.piercings['x']=numpy.zeros(self.npiercings)
 		self.piercings['y']=numpy.zeros(self.npiercings)
+		self.piercings['weight']=numpy.zeros(self.npiercings)
 		for source in range(sources.nsources):
 			self.piercings['x'][source*nstations:(source+1)*nstations]=self.hiono*sources.sources['x'][source]+outside['x']
 			self.piercings['y'][source*nstations:(source+1)*nstations]=self.hiono*sources.sources['y'][source]+outside['y']
+			self.piercings['weight'][source*nstations:(source+1)*nstations]=array.stations['weight']
 
-	def assess(self, rmax=70.0, nnoll=20,doplot=True):
+	def assess(self, rmax=70.0, nnoll=20, doplot=True):
 		A=numpy.zeros([self.npiercings, nnoll])
 		for piercing in range(self.npiercings):
 			x=self.piercings['x'][piercing]
 			y=self.piercings['y'][piercing]
+			weight=numpy.sqrt(self.piercings['weight'][piercing])
 			r=numpy.sqrt(x*x+y*y)
 			phi=numpy.arctan2(y,x)
 			if(r<rmax):
 				for noll in range(nnoll):
-					A[piercing,noll]=zernike.zernikel(noll,r/rmax,phi)
+					A[piercing,noll]=weight*zernike.zernikel(noll,r/rmax,phi)
 		Covar_A=numpy.zeros([nnoll, nnoll])
 		for nnol1 in range(nnoll):
 			for nnol2 in range(nnoll):
 				Covar_A[nnol1,nnol2]=numpy.sum(A[...,nnol1]*A[...,nnol2])
 		U,s,Vh = linalg.svd(Covar_A)
-		c15=numpy.average(s[0:15])
+		s=numpy.sqrt(s)
 		if doplot:
 			plt.clf()
-			plt.title('%s rmax=%d average SV=%f' % (self.name, rmax, c15))
+			plt.title('%s rmax=%d' % (self.name, rmax))
 			plt.xlabel('Singular vector index')
-			plt.ylabel('Singular value')
+			plt.ylabel('Sqrt(Singular value)')
 			plt.plot(s, '.')
 			plt.savefig('%s_rmax=%d_SVD.pdf' % (self.name, rmax))
-		return c15
+			plt.clf()
+			plt.title('%s rmax=%d' % (self.name, rmax))
+			plt.ylabel('Nnoll')
+			plt.xlabel('Nnoll')
+			plt.imshow(U, interpolation='nearest')
+			plt.savefig('%s_rmax=%d_U.pdf' % (self.name, rmax))
+			plt.clf()
+			plt.title('%s rmax=%d' % (self.name, rmax))
+			plt.xlabel('Nnoll')
+			plt.ylabel('Nnoll')
+			plt.imshow(Vh, interpolation='nearest')
+			plt.savefig('%s_rmax=%d_Vh.pdf' % (self.name, rmax))
+		return s
 	

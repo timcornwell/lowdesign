@@ -5,7 +5,7 @@ from telopt import *
 #
 ts=TelSources()
 
-nsources=10
+nsources=6
 
 ntrials=10
 rmax=50
@@ -31,11 +31,11 @@ for station in range(1,nstationsmax):
 		tp.construct(ts,lowrand,hiono=300,rmin=2.0)
 		if trial==0:
 			tp.plot(rmax=rmax)
-		shalfrandom[station]=max(shalfrandom[station],(1.0/float(ntrials))*tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0)))
+		shalfrandom[station]=max(shalfrandom[station],tp.assess(nnoll=100, rmax=rmax, doplot=(trial==0)))
 	
 plt.clf()
 plt.plot(stations, shalfrandom, color='r')
-plt.title('Shalf for 10 sources, random array')
+plt.title('S Average for fixed source density, random array')
 plt.xlabel('Number of stations')
-plt.ylabel('Shalf')
-plt.savefig('shalfstations.pdf')
+plt.ylabel('S ave')
+plt.savefig('savestations.pdf')

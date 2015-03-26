@@ -5,6 +5,8 @@ from telopt import *
 #
 ts=TelSources()
 
+rmax=40.08
+
 nsources=6
 
 ntrials=10
@@ -20,17 +22,20 @@ for isize in range(nsizesmax):
 	size=20.0+5.0*isize
 	rmax=50*35.0/size
 	sizes[isize]=size
+	
 	lowrand=TelArray()
-	lowrand.circles('LOW_CIRCLE_diameter=%d' % size, nstations=46, nhalo=46, rhalo=rmax)
+	lowrand.circles('LOW_CIRCLE_diameter=%d' % size, nstations=46, nhalo=46, rhalo=40.0)
 	lowrand.shakehalo(rshake=5.0)
+	lowrand.plot(rmax=40.0)
+	
 	lowboolardy=TelArray()
-	lowboolardy.readKML('boolardyhandedit.kml')
+	lowboolardy.readKML('Boolardy_diameter=%d' % size, 'boolardyhandedit.kml')
+	lowboolardy.plot(rmax=40.0)
 
 	tp=TelPiercings()
 
 	random.seed(781490893)
-#	ts.construct(nsources=int(nsources*(35.0/size)*(35.0/size)), radius=3.0/size)
-	ts.construct(nsources=nsources, radius=3.0/size)
+	ts.construct(nsources=int(nsources*(35.0/size)*(35.0/size)), radius=3.0/size)
 	for trial in range(ntrials):
 		tp.construct(ts,lowrand,hiono=300,rmin=2.0)
 		if trial==0:
