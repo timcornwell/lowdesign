@@ -22,6 +22,72 @@ class TelUtils:
 			x[i]=r*numpy.cos(phi)
 			y[i]=r*numpy.sin(phi)
 		return x, y
+		
+class TelMask:
+	def _init_(self):
+		self.name=''
+		self.construct()
+		
+	def readMask(self, maskfile='Mask_BoolardyStation.png'):
+		self.mask = scipy.misc.imread('Mask_BoolardyStation.png')
+		self.center={}
+		self.center['x']=self.mask.shape[0]/2
+		self.center['y']=self.mask.shape[1]/2
+		self.scale={}
+		self.scale['x']=2*80.0/self.mask.shape[0]
+		self.scale['y']=2*80.0/self.mask.shape[1]
+		
+	def masked(self, x, y):
+		mx=self.center['x']+x/self.scale['x']
+		my=self.center['y']+y/self.scale['y']
+		return self.mask[mx,my,0]>0
+		
+
+	def readKML(self, name='BoolardyStation', kmlfile="BoolardyStation2(approx).kml"):
+	
+		long0=116.779167
+		lat0=-26.789267
+		Re=6371.0
+		nsegments=55
+		self.segments={}
+		self.segments['x1']=numpy.zeros(nsegments)
+		self.segments['y1']=numpy.zeros(nsegments)
+		self.segments['x2']=numpy.zeros(nsegments)
+		self.segments['y2']=numpy.zeros(nsegments)
+		self.name=name
+		f=open(kmlfile)
+		segment=0
+		nextline=False
+		for line in f:
+			line=line.lstrip()
+			if nextline:
+				part=line.split(' ')[0].split(',')
+				x=float(part[0])
+				y=float(part[1])
+				self.segments['x1'][segment]=(x-long0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
+				self.segments['y1'][segment]=(y-lat0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
+				part=line.split(' ')[1].split(',')
+				x=float(part[0])
+				y=float(part[1])
+				self.segments['x2'][segment]=(x-long0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
+				self.segments['y2'][segment]=(y-lat0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
+				nextline=False
+				segment=segment+1
+			if line.find('</coordinates>') > -1:
+				nextline=False
+			elif line.find('<coordinates>') > -1:
+				nextline=True
+				
+	def plot(self, rmax=20):
+		plt.clf()
+		lines=[self.segments['x1'], self.segments['x2'], self.segments['y1'], self.segments['y2']]
+		plt.fill(self.segments['x1'], self.segments['y1'])
+		plt.axes().set_xlim([-80.0,80.0])
+		plt.axes().set_ylim([-80.0,80.0])
+		plt.axes().set_aspect('equal')
+		plt.axes().get_xaxis().set_visible(False)
+		plt.axes().get_yaxis().set_visible(False)
+		plt.savefig('Mask_%s.png' % self.name)
 
 class TelArray:
 
@@ -454,7 +520,7 @@ class TelPiercings:
 			plt.title('%s rmax=%d' % (self.name, rmax))
 			plt.xlabel('Singular vector index')
 			plt.ylabel('Sqrt(Singular value)')
-			plt.plot(s, '.')
+			plt.plot(s)
 			plt.savefig('%s_rmax=%d_SVD.pdf' % (self.name, rmax))
 			plt.clf()
 			plt.title('%s rmax=%d' % (self.name, rmax))
