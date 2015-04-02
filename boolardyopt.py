@@ -17,10 +17,10 @@ tuv=TelUV()
 
 rhalo=40.0*numpy.sqrt(12.0/46.0)
 lowrand12=TelArray()
-lowrand12.circles('LOW_CIRCLES12', nstations=12, nhalo=12, rhalo=rhalo)
-lowrand12.shakehalo(rshake=rhalo/4.0)
+lowrand12.randomBoolardy('LOW_BOOLARDYRANDOM12', nstations=12, nhalo=12, rhalo=rhalo)
 lowrand12.plot(rmax=rhalo)
-lowrand12.save('LOW_CIRCLES12_OPT.csv')
+lowrand12.save('LOW_BOOLARDYRANDOM12_OPT.csv')
+print lowrand12.mst()
 tuv.construct(lowrand12);tuv.plot()
 scircles12=numpy.zeros(nnoll)
 for trial in range(ntrials):
@@ -32,33 +32,14 @@ for trial in range(ntrials):
 	if trial==0:
 		print rhalo, diameter, ansources
 		tp.plot(rmax=20.0)
-	scircles12=scircles12+(1.0/float(ntrials))*tp.assess(nnoll=nnoll, rmax=rhalo, doplot=(trial==0))
-
-rhalo=40.0*numpy.sqrt(46.0/46.0)
-lowrandbool=TelArray()
-lowrandbool.randomBoolardy('LOW_BOOLARDYRANDOM46', nstations=46, nhalo=46, rhalo=rhalo)
-lowrandbool.plot(rmax=rhalo)
-lowrandbool.save('LOW_BOOLARDYRANDOM46_OPT.csv')
-tuv.construct(lowrandbool);tuv.plot()
-srandbool=numpy.zeros(nnoll)
-for trial in range(ntrials):
-	diameter=35.0*numpy.sqrt(46.0/46.0)
-	ansources=int(nsources*(35.0/diameter)*(35.0/diameter))
-	ts.construct(nsources=ansources, radius=3.0/diameter)
-	tp=TelPiercings()
-	tp.construct(ts,lowrandbool,hiono=300,rmin=0)
-	if trial==0:
-		print rhalo, diameter, ansources
-		tp.plot(rmax=40.0)
-	srandbool=srandbool+(1.0/float(ntrials))*tp.assess(nnoll=nnoll, rmax=rhalo, doplot=(trial==0))
-	
+	scircles12=scircles12+(1.0/float(ntrials))*tp.assess(nnoll=nnoll, rmax=rhalo, doplot=(trial==0))	
 
 rhalo=40.0*numpy.sqrt(46.0/46.0)
 lowrand46=TelArray()
-lowrand46.circles('LOW_CIRCLES46', nstations=46, nhalo=46, rhalo=rhalo)
-lowrand46.shakehalo(rshake=rhalo/4.0)
+lowrand46.randomBoolardy('LOW_BOOLARDYRANDOM46', nstations=46, nhalo=46, rhalo=rhalo)
 lowrand46.plot(rmax=rhalo)
-lowrand46.save('LOW_CIRCLES46_OPT.csv')
+lowrand46.save('LOW_BOOLARDYRANDOM46_OPT.csv')
+print lowrand46.mst()
 tuv.construct(lowrand46);tuv.plot()
 scircles46=numpy.zeros(nnoll)
 for trial in range(ntrials):
@@ -75,10 +56,10 @@ for trial in range(ntrials):
 
 rhalo=40.0*numpy.sqrt(185.0/46.0)
 lowrand185=TelArray()
-lowrand185.circles('LOW_CIRCLES185', nstations=185, nhalo=185, rhalo=rhalo)
-lowrand185.shakehalo(rshake=rhalo/4.0)
+lowrand185.randomBoolardy('LOW_BOOLARDYRANDOM185', nstations=185, nhalo=185, rhalo=rhalo)
 lowrand185.plot(rmax=rhalo)
-lowrand185.save('LOW_CIRCLES185_OPT.csv')
+lowrand185.save('LOW_BOOLARDYRANDOM185_OPT.csv')
+print lowrand185.mst()
 tuv.construct(lowrand185);tuv.plot()
 scircles185=numpy.zeros(nnoll)
 for trial in range(ntrials):
@@ -96,7 +77,6 @@ plt.clf()
 plt.semilogy(scircles12, color='r')
 plt.semilogy(scircles46, color='g')
 plt.semilogy(scircles185, color='b')
-plt.semilogy(srandbool, color='black')
 plt.title('Sqrt(Singular values) (68m, 35m, 17m)')
 plt.xlabel('Singular value index')
 plt.ylabel('Sqrt(Singular value)')

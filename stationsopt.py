@@ -5,9 +5,9 @@ from telopt import *
 #
 ts=TelSources()
 
-nsources=6
+nsources=1
 
-ntrials=10
+ntrials=1
 rmax=50
 nstationsmax=45
 
@@ -16,11 +16,12 @@ stations=numpy.zeros(nstationsmax)
 
 tuv=TelUV()
 
-for station in range(1,nstationsmax):
+for station in range(5,nstationsmax):
 	stations[station]=station
 	lowrand=TelArray()
-	lowrand.random('LOW_RANDOM_%d'%station, nstations=station, nhalo=station, rhalo=40.0)
+	lowrand.randomBoolardy('LOW_RANDOMBOOLARDY_%d'%station, nstations=station, nhalo=station, rhalo=40.0)
 	lowrand.plot()
+	print station, lowrand.mst()
 	tuv.construct(lowrand);tuv.plot()
 
 	tp=TelPiercings()

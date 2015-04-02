@@ -7,12 +7,13 @@ ts=TelSources()
 
 nsources=10
 nnoll=60
+diameter=70.0
 
 c15opt=numpy.zeros(nsources)
 c15lowbd=numpy.zeros(nsources)
 
 ntrials=1
-rmax=20
+rmax=15
 
 tuv=TelUV()
 
@@ -37,7 +38,7 @@ for nsource in range(nsources):
 	slowbd=numpy.zeros(nnoll)
 	
 	for trial in range(ntrials):
-		ts.construct(nsources=nsource+1, radius=3.0/35.0)
+		ts.construct(nsources=nsource+1, radius=3.0/diameter)
 
 		print "Number of sources ", nsource+1, "Trial ", trial
 		tp.construct(ts,lowopt,hiono=300,rmin=0)
@@ -57,5 +58,5 @@ for nsource in range(nsources):
 	plt.title('Singular values %d sources (r:BD, g:opt)' % (nsource+1))
 	plt.xlabel('Singular value index')
 	plt.ylabel('Singular value')
-#	plt.axes().set_ylim([1e-3,1e0])
+	plt.axes().set_ylim([1e2,1e5])
 	plt.savefig('Singularvalue_%d_sources.pdf' % (nsource+1))

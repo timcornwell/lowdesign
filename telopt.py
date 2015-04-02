@@ -8,8 +8,11 @@ import csv
 import zernike
 from scipy import linalg
 import Image
+import numpy as np
+import scipy.spatial.distance as sd 
+from mst import * 
 
-random.seed(781490893)
+#random.seed(781490893)
 
 class TelUtils:
 
@@ -38,9 +41,12 @@ class TelMask:
 		self.scale['y']=2*80.0/self.mask.shape[1]
 		
 	def masked(self, x, y):
-		mx=self.center['x']+x/self.scale['x']
-		my=self.center['y']+y/self.scale['y']
-		return self.mask[mx,my,0]>0
+		mx=+int(-y/self.scale['x']+self.center['x'])
+		my=+int(x/self.scale['y']+self.center['y'])
+		if  self.mask[mx,my,0] == 255:
+			return True
+		else:
+			return False
 		
 
 	def readKML(self, name='BoolardyStation', kmlfile="BoolardyStation2(approx).kml"):
@@ -80,19 +86,23 @@ class TelMask:
 				
 	def plot(self, rmax=20):
 		plt.clf()
-		lines=[self.segments['x1'], self.segments['x2'], self.segments['y1'], self.segments['y2']]
-		plt.fill(self.segments['x1'], self.segments['y1'])
+		plt.fill(self.segments['x1'], self.segments['y1'],fill=False,color='blue')
 		plt.axes().set_xlim([-80.0,80.0])
 		plt.axes().set_ylim([-80.0,80.0])
 		plt.axes().set_aspect('equal')
+		plt.savefig('Mask_%s_frame.png' % self.name)
+		plt.fill(self.segments['x1'], self.segments['y1'],fill=True,color='blue')
 		plt.axes().get_xaxis().set_visible(False)
 		plt.axes().get_yaxis().set_visible(False)
+# 		plt.axes().set_frame_on(False)
 		plt.savefig('Mask_%s.png' % self.name)
 
 class TelArray:
 
 	def _init_(self):
 		self.name=''
+		self.mask=TelMask()
+		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
 		self.construct()
 	
 	def recenter(self):
@@ -102,7 +112,7 @@ class TelArray:
 		self.stations['x']=self.stations['x']-self.center['x']
 		self.stations['y']=self.stations['y']-self.center['y']
 
-	def plot(self, rmax=40):
+	def plot(self, rmax=40, plotfile=''):
 		plt.clf()
 		plt.title('Antenna locations %s' % self.name)
 		plt.xlabel('X (km)')
@@ -112,12 +122,19 @@ class TelArray:
 		circ=plt.Circle((0,0), radius=rmax, color='g', fill=False)
 		fig = plt.gcf()
 		fig.gca().add_artist(circ)
-		maxaxis=max(numpy.max(abs(self.stations['x'])), numpy.max(abs(self.stations['y'])))
+		maxaxis=1.1*max(numpy.max(abs(self.stations['x'])), numpy.max(abs(self.stations['y'])))
 		plt.axes().set_xlim([-maxaxis,maxaxis])
 		plt.axes().set_ylim([-maxaxis,maxaxis])
-		plt.savefig('Array_%s.pdf' % self.name)
+		mask=TelMask()
+		mask.readKML()
+		plt.fill(mask.segments['x1'], mask.segments['y1'], fill=False)
+		if plotfile=='':
+			plotfile='Array_%s.pdf' % self.name
+		plt.savefig(plotfile)
 	
-	def random(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=45, nantennas=256, fobs=1e8, diameter=0.035):
+	def random(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=45, nantennas=256, fobs=1e8, diameter=35.0):
+		self.mask=TelMask()
+		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
 		self.name=name
 		self.rhalo=rhalo
 		self.rcore=rcore
@@ -130,7 +147,37 @@ class TelArray:
 		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
 		self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 
-	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=44, fobs=1e8, diameter=0.035):
+	def randomBoolardy(self, name='RandomBoolardy', rhalo=40.0, rcore=1.0, nstations=512, nhalo=45, nantennas=256, fobs=1e8, diameter=35.0):
+		self.mask=TelMask()
+		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
+		self.name=name
+		self.rhalo=rhalo
+		self.rcore=rcore
+		self.nstations=nstations
+		ncore=self.nstations-nhalo
+		self.fobs=fobs
+		self.diameter=diameter
+		self.stations={}
+		self.stations['x']=numpy.zeros(self.nstations)
+		self.stations['y']=numpy.zeros(self.nstations)
+		self.stations['weight']=numpy.zeros(self.nstations)
+		self.stations['x'][:ncore], self.stations['y'][:ncore]=TelUtils().uniformcircle(ncore, self.rcore)
+		inhalo=ncore
+		while inhalo < nstations:
+			x, y=TelUtils().uniformcircle(1, self.rhalo)
+			if not self.mask.masked(x,y):
+				r=numpy.sqrt(x*x+y*y)
+				if r<rhalo:
+					self.stations['x'][inhalo]=x
+					self.stations['y'][inhalo]=y
+					inhalo=inhalo+1
+		self.stations['x'][0]=0.0
+		self.stations['y'][0]=0.0
+		self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
+
+	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=44, fobs=1e8, diameter=35.0):
+		self.mask=TelMask()
+		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
 		self.name=name
 		self.rhalo=rhalo
 		self.rcore=rcore
@@ -175,25 +222,29 @@ class TelArray:
 				self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 				phi=phi+dphi
 				station=station+1
-		self.recenter()
 
-	def shakehalo(self, rshake):
-		for station in range(self.nstations):
-			r=numpy.sqrt(self.stations['x'][station]*self.stations['x'][station]+self.stations['y'][station]*self.stations['y'][station])
-			if r>self.rcore:
-				phi=2*numpy.pi*random.random()
+	def shakehalo(self, rshake=5.0):
+		rshake=1.0
+		newstations={}
+		newstations['x']=self.stations['x'].copy()
+		newstations['y']=self.stations['y'].copy()
+		for station in range(1,self.nstations):
+			cr=numpy.sqrt(self.stations['x'][station]*self.stations['x'][station]+self.stations['y'][station]*self.stations['y'][station])
+			if cr>self.rcore:
+				phi=2.0*numpy.pi*random.random()
 				r=rshake*numpy.sqrt(random.random())
-				dx=r*numpy.cos(phi)
-				dy=r*numpy.sin(phi)
-				self.stations['x'][station]=self.stations['x'][station]+dx
-				self.stations['y'][station]=self.stations['y'][station]+dy
-			r=numpy.sqrt(self.stations['x'][station]*self.stations['x'][station]+self.stations['y'][station]*self.stations['y'][station])
-			if r>self.rhalo:
-				self.stations['x'][station]=self.rhalo*self.stations['x'][station]/r
-				self.stations['y'][station]=self.rhalo*self.stations['y'][station]/r
-		self.recenter()
+				x=newstations['x'][station]+r*numpy.cos(phi)
+				y=newstations['y'][station]+r*numpy.sin(phi)
+				rdr=numpy.sqrt(x*x+y*y)
+ 				if rdr<self.rhalo:
+  					if not self.mask.masked(x,y):
+  						newstations['x'][station]=x
+ 						newstations['y'][station]=y
+ 			self.stations=newstations
 
 	def readLOWBD(self, name='LOWBD', rcore=0.0, l1def='SKA-low_config_baseline_design_arm_stations_2013apr30.csv'):
+		self.mask=TelMask()
+		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
 		self.name=name
 		self.nstations=0
 		self.stations={}
@@ -217,7 +268,7 @@ class TelArray:
 			reader = csv.reader(f)
 			for row in reader:
 				x=scale*(float(row[1])-meanx)
-				y=scale*(float(row[0])-meany)
+				y=-scale*(float(row[0])-meany)
 				r=numpy.sqrt(x*x+y*y)
 				if r>rcore:
 					self.nstations=self.nstations+1
@@ -229,7 +280,7 @@ class TelArray:
 			reader = csv.reader(f)
 			for row in reader:
 				x=scale*(float(row[1])-meanx)
-				y=scale*(float(row[0])-meany)
+				y=-scale*(float(row[0])-meany)
 				r=numpy.sqrt(x*x+y*y)
 				if r>rcore:
 					self.stations['x'][station]=x
@@ -239,6 +290,8 @@ class TelArray:
 		self.recenter()
 
 	def readLOWL1(self, name='LOWL1', rcore=0.0, l1def='L1_configuration.csv'):
+		self.mask=TelMask()
+		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
 		self.name=name
 		self.nstations=0
 		self.stations={}
@@ -285,6 +338,8 @@ class TelArray:
 		self.recenter()
 		
 	def readLOFAR(self, name='LOFAR', stationtype='S', band='HBA', lfdef='LOFAR.csv', lat=52.7):
+		self.mask=TelMask()
+		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
 		cs=numpy.cos(numpy.pi*lat/180.0)
 		sn=numpy.sin(numpy.pi*lat/180.0)
 		self.name=name
@@ -331,10 +386,12 @@ class TelArray:
 		with open(filename, 'wb') as fp:
 			rowwriter = csv.writer(fp)
 			for station in range(self.nstations):
-				rowwriter.writerow([1000.0*self.stations['x'][station],1000.0*self.stations['y'][station]])
+				rowwriter.writerow([1000.0*self.stations['y'][station],-1000.0*self.stations['x'][station]])
 				
-	def readKML(self, name='KML', kmlfile="Boolardy.kml"):
+	def readKML(self, name='KML', kmlfile="Boolardy.kml", diameter=35.0):
 	
+		self.mask=TelMask()
+		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
 		long0=116.779167
 		lat0=-26.789267
 		Re=6371.0
@@ -342,8 +399,9 @@ class TelArray:
 		self.stations['x']=numpy.zeros(46)
 		self.stations['y']=numpy.zeros(46)
 		self.name=name
+		self.diameter=diameter
 		f=open(kmlfile)
-		nstations=0
+		self.nstations=46
 		for line in f:
 			line=line.lstrip()
 			if line.find("name")>0:
@@ -355,8 +413,6 @@ class TelArray:
 				self.stations['x'][station]=(x-long0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
 				self.stations['y'][station]=(y-lat0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
 				self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
-		self.nstations=nstations
-		self.recenter()
 				
 	def writeKML(self, kmlfile="LOW_CIRCLES.kml"):
 	
@@ -398,12 +454,44 @@ class TelArray:
 		f.write( e[0])
 		f.write( e[1])
 		
-	def assess(self):
-		return 1.0
+	def distance(self):
+		P=numpy.zeros([self.nstations,2])
+		P[...,0]=self.stations['x']
+		P[...,1]=self.stations['y']
+		distancemat=sd.pdist(P)
+		distance=numpy.min(distancemat)
+		return distance
 	
-#
-# UV coverage
-#
+	def mst(self, doplot=True):
+		P=numpy.zeros([self.nstations,2])
+		P[...,0]=self.stations['x']
+		P[...,1]=self.stations['y']
+		X=sd.squareform(sd.pdist(P))
+		edge_list = minimum_spanning_tree(X)
+		if doplot:
+			plt.clf()
+			plt.scatter(P[:, 0], P[:, 1]) 
+			dist=0    
+			for edge in edge_list:
+				i, j = edge
+				plt.plot([P[i, 0], P[j, 0]], [P[i, 1], P[j, 1]], c='r')
+				dist=dist+numpy.sqrt((P[i,0]-P[j,0])*(P[i,0]-P[j,0])+(P[i,1]-P[j,1])*(P[i,1]-P[j,1]))
+			plt.title('MST for %s, distance=%.1f km' % (self.name, dist))
+			plt.xlabel('X (km)')
+			plt.ylabel('y (km)')
+			plt.axes().set_aspect('equal')
+			maxaxis=numpy.max(abs(P))
+			plt.axes().set_xlim([-maxaxis,maxaxis])
+			plt.axes().set_ylim([-maxaxis,maxaxis])
+			plt.savefig('%s_MST.pdf' %self.name)
+			return dist
+		else:
+			dist=0    
+			for edge in edge_list:
+				i, j = edge
+				dist=dist+numpy.sqrt((P[i,0]-P[j,0])*(P[i,0]-P[j,0])+(P[i,1]-P[j,1])*(P[i,1]-P[j,1]))
+			return dist
+
 class TelUV:
 	def _init_(self):
 		self.name=''
@@ -522,17 +610,17 @@ class TelPiercings:
 			plt.ylabel('Sqrt(Singular value)')
 			plt.plot(s)
 			plt.savefig('%s_rmax=%d_SVD.pdf' % (self.name, rmax))
-			plt.clf()
-			plt.title('%s rmax=%d' % (self.name, rmax))
-			plt.ylabel('Nnoll')
-			plt.xlabel('Nnoll')
-			plt.imshow(U, interpolation='nearest')
-			plt.savefig('%s_rmax=%d_U.pdf' % (self.name, rmax))
-			plt.clf()
-			plt.title('%s rmax=%d' % (self.name, rmax))
-			plt.xlabel('Nnoll')
-			plt.ylabel('Nnoll')
-			plt.imshow(Vh, interpolation='nearest')
-			plt.savefig('%s_rmax=%d_Vh.pdf' % (self.name, rmax))
+# 			plt.clf()
+# 			plt.title('%s rmax=%d' % (self.name, rmax))
+# 			plt.ylabel('Nnoll')
+# 			plt.xlabel('Nnoll')
+# 			plt.imshow(U, interpolation='nearest')
+# 			plt.savefig('%s_rmax=%d_U.pdf' % (self.name, rmax))
+# 			plt.clf()
+# 			plt.title('%s rmax=%d' % (self.name, rmax))
+# 			plt.xlabel('Nnoll')
+# 			plt.ylabel('Nnoll')
+# 			plt.imshow(Vh, interpolation='nearest')
+# 			plt.savefig('%s_rmax=%d_Vh.pdf' % (self.name, rmax))
 		return s
 	
