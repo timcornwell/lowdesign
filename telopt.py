@@ -42,7 +42,7 @@ class TelMask:
 		
 	def masked(self, x, y):
 		mx=+int(-y/self.scale['x']+self.center['x'])
-		my=+int(x/self.scale['y']+self.center['y'])
+		my=+int(+x/self.scale['y']+self.center['y'])
 		if  self.mask[mx,my,0] == 255:
 			return True
 		else:
@@ -139,6 +139,9 @@ class TelArray:
 		self.rhalo=rhalo
 		self.rcore=rcore
 		self.nstations=nstations
+		self.center={}
+		self.center['x']=0.0
+		self.center['y']=0.0
 		ncore=self.nstations-nhalo
 		self.fobs=fobs
 		self.diameter=diameter
@@ -154,6 +157,9 @@ class TelArray:
 		self.rhalo=rhalo
 		self.rcore=rcore
 		self.nstations=nstations
+		self.center={}
+		self.center['x']=0.0
+		self.center['y']=0.0
 		ncore=self.nstations-nhalo
 		self.fobs=fobs
 		self.diameter=diameter
@@ -182,6 +188,9 @@ class TelArray:
 		self.rhalo=rhalo
 		self.rcore=rcore
 		self.nstations=nstations
+		self.center={}
+		self.center['x']=0.0
+		self.center['y']=0.0
 		ncore=self.nstations-nhalo
 		self.fobs=fobs
 		self.diameter=diameter
@@ -224,7 +233,6 @@ class TelArray:
 				station=station+1
 
 	def shakehalo(self, rshake=5.0):
-		rshake=1.0
 		newstations={}
 		newstations['x']=self.stations['x'].copy()
 		newstations['y']=self.stations['y'].copy()
@@ -242,7 +250,7 @@ class TelArray:
  						newstations['y'][station]=y
  			self.stations=newstations
 
-	def readLOWBD(self, name='LOWBD', rcore=0.0, l1def='SKA-low_config_baseline_design_arm_stations_2013apr30.csv'):
+	def readCSV(self, name='LOWBD', rcore=0.0, l1def='SKA-low_config_baseline_design_arm_stations_2013apr30.csv', recenter=False):
 		self.mask=TelMask()
 		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
 		self.name=name
@@ -253,41 +261,49 @@ class TelArray:
 		self.diameter=35.0
 		meanx=0
 		meany=0
-		with open(l1def, 'rU') as f:
-			reader = csv.reader(f)
-			for row in reader:
-				meanx=meanx+float(row[1])
-				meany=meany+float(row[0])
-				self.nstations=self.nstations+1
-		meanx=meanx/self.nstations
-		meany=meany/self.nstations
-		f.close()
-		self.nstations=0
+		if recenter:
+			with open(l1def, 'rU') as f:
+				reader = csv.reader(f)
+				for row in reader:
+					meanx=meanx+float(row[1])
+					meany=meany+float(row[0])
+					self.nstations=self.nstations+1
+			meanx=meanx/self.nstations
+			meany=meany/self.nstations
+			f.close()
+		self.nstations=1
 		scale=0.001
 		with open(l1def, 'rU') as f:
 			reader = csv.reader(f)
 			for row in reader:
-				x=scale*(float(row[1])-meanx)
-				y=-scale*(float(row[0])-meany)
+				x=scale*(float(row[0])-meanx)
+				y=scale*(float(row[1])-meany)
 				r=numpy.sqrt(x*x+y*y)
 				if r>rcore:
 					self.nstations=self.nstations+1
 		
 		self.stations['x']=numpy.zeros(self.nstations)
 		self.stations['y']=numpy.zeros(self.nstations)
-		station=0
+		self.center={}
+		self.center['x']=0.0
+		self.center['y']=0.0
+		station=self.nstations-1
 		with open(l1def, 'rU') as f:
 			reader = csv.reader(f)
 			for row in reader:
-				x=scale*(float(row[1])-meanx)
-				y=-scale*(float(row[0])-meany)
+				x=scale*(float(row[0])-meanx)
+				y=scale*(float(row[1])-meany)
 				r=numpy.sqrt(x*x+y*y)
 				if r>rcore:
 					self.stations['x'][station]=x
 					self.stations['y'][station]=y
 					self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
-					station=station+1
-		self.recenter()
+					station=station-1
+		print self.stations
+		print self.stations['x'][0], self.stations['y'][0]
+
+	def readLOWBD(self, name='LOWBD', rcore=0.0, l1def='SKA-low_config_baseline_design_arm_stations_2013apr30.csv'):
+		return self.readCSV(name, rcore, l1def)
 
 	def readLOWL1(self, name='LOWL1', rcore=0.0, l1def='L1_configuration.csv'):
 		self.mask=TelMask()
@@ -413,6 +429,8 @@ class TelArray:
 				self.stations['x'][station]=(x-long0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
 				self.stations['y'][station]=(y-lat0)*Re*numpy.pi/(180.0*numpy.cos(numpy.pi*lat0/180.0))
 				self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
+		self.center['x']=0.0
+		self.center['y']=0.0
 				
 	def writeKML(self, kmlfile="LOW_CIRCLES.kml"):
 	
@@ -442,8 +460,8 @@ class TelArray:
 		for ss in s:
 			f.write(ss)
 		for station in range(self.nstations):
-			long= long0+180.0*(self.stations['x'][station]+self.center['x'])*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
-			lat = lat0 -180.0*(self.stations['y'][station]+self.center['y'])*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
+			long= long0-180.0*(self.stations['y'][station])*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
+			lat = lat0 +180.0*(self.stations['x'][station])*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
 			f.write( l[0])
 			f.write( l[1])
 			f.write( l[2] % station)
@@ -610,17 +628,5 @@ class TelPiercings:
 			plt.ylabel('Sqrt(Singular value)')
 			plt.plot(s)
 			plt.savefig('%s_rmax=%d_SVD.pdf' % (self.name, rmax))
-# 			plt.clf()
-# 			plt.title('%s rmax=%d' % (self.name, rmax))
-# 			plt.ylabel('Nnoll')
-# 			plt.xlabel('Nnoll')
-# 			plt.imshow(U, interpolation='nearest')
-# 			plt.savefig('%s_rmax=%d_U.pdf' % (self.name, rmax))
-# 			plt.clf()
-# 			plt.title('%s rmax=%d' % (self.name, rmax))
-# 			plt.xlabel('Nnoll')
-# 			plt.ylabel('Nnoll')
-# 			plt.imshow(Vh, interpolation='nearest')
-# 			plt.savefig('%s_rmax=%d_Vh.pdf' % (self.name, rmax))
 		return s
 	

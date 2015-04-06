@@ -1,4 +1,6 @@
 from telopt import *
+import math
+import random
 
 #
 # Radius=1/2 FWZ ~ FWHM
@@ -6,10 +8,11 @@ from telopt import *
 #random.seed(781450893)
 fresh=False
 
-rhalo=15.0
+rhalo=40.0
+T=0.1
 
 #for stations in [11, 21, 31, 41, 46, 51]:
-for stations in [46]:
+for stations in [11, 21]:
 
 	ntrials=1000000
 	lowrandbool=TelArray()
@@ -23,24 +26,30 @@ for stations in [46]:
 
 	bestDistance=best.distance()
 	print "Initial distance metric = ", bestDistance
-	frame=0
 	for trial in range(ntrials):
 		trialconfig.stations=best.stations.copy()
 		if fresh:
 			trialconfig=TelArray()
 			trialconfig.randomBoolardy('LOW_RANDOMBOOLARDY%d' % stations, nstations=stations, nhalo=stations, rhalo=rhalo)
 		else:
-			trialconfig.shakehalo(0.1)
+			trialconfig.shakehalo(1.0)
 		distance=trialconfig.distance()
+		prob=math.exp(-(bestDistance-distance)/T)
+		rnd=random.uniform(0.0,1.0)
 		if (distance>bestDistance):
 			bestDistance=distance
 			best.stations=trialconfig.stations.copy()
 			print "Trial ", trial, " Found better config ", best.distance()
-			best.plot(rmax=rhalo, plotfile='Array_RANDOMBOOLARDY%d_%d.jpg' % (stations, frame))
-			frame=frame+1
+			T=T*0.99
+		elif (rnd<prob):
+			bestDistance=distance
+			best.stations=trialconfig.stations.copy()
+			print "Trial ", trial, " Found worse config ", best.distance(), " but accepting anyway"
+			print prob, rnd, T
 		else:
 			trialconfig.stations=best.stations.copy()
 		
 	best.plot(rmax=rhalo)
 	best.save('LOW_RANDOMBOOLARDY%d.csv' % stations)
+	best.writeKML('LOW_RANDOMBOOLARDY%d.kml' % stations	)
 	print best.mst()
