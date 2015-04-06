@@ -177,8 +177,6 @@ class TelArray:
 					self.stations['x'][inhalo]=x
 					self.stations['y'][inhalo]=y
 					inhalo=inhalo+1
-		self.stations['x'][0]=0.0
-		self.stations['y'][0]=0.0
 		self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
 
 	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=44, fobs=1e8, diameter=35.0):
@@ -261,17 +259,19 @@ class TelArray:
 		self.diameter=35.0
 		meanx=0
 		meany=0
-		if recenter:
-			with open(l1def, 'rU') as f:
-				reader = csv.reader(f)
-				for row in reader:
-					meanx=meanx+float(row[1])
-					meany=meany+float(row[0])
-					self.nstations=self.nstations+1
-			meanx=meanx/self.nstations
-			meany=meany/self.nstations
-			f.close()
-		self.nstations=1
+		with open(l1def, 'rU') as f:
+			reader = csv.reader(f)
+			for row in reader:
+				meanx=meanx+float(row[1])
+				meany=meany+float(row[0])
+				self.nstations=self.nstations+1
+		meanx=meanx/self.nstations
+		meany=meany/self.nstations
+		if not recenter:
+			meanx=0.0
+			meany=0.0
+		f.close()
+		self.nstations=0
 		scale=0.001
 		with open(l1def, 'rU') as f:
 			reader = csv.reader(f)
@@ -279,14 +279,10 @@ class TelArray:
 				x=scale*(float(row[0])-meanx)
 				y=scale*(float(row[1])-meany)
 				r=numpy.sqrt(x*x+y*y)
-				if r>rcore:
-					self.nstations=self.nstations+1
+				self.nstations=self.nstations+1
 		
 		self.stations['x']=numpy.zeros(self.nstations)
 		self.stations['y']=numpy.zeros(self.nstations)
-		self.center={}
-		self.center['x']=0.0
-		self.center['y']=0.0
 		station=self.nstations-1
 		with open(l1def, 'rU') as f:
 			reader = csv.reader(f)
@@ -294,13 +290,10 @@ class TelArray:
 				x=scale*(float(row[0])-meanx)
 				y=scale*(float(row[1])-meany)
 				r=numpy.sqrt(x*x+y*y)
-				if r>rcore:
-					self.stations['x'][station]=x
-					self.stations['y'][station]=y
-					self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
-					station=station-1
-		print self.stations
-		print self.stations['x'][0], self.stations['y'][0]
+				self.stations['x'][station]=x
+				self.stations['y'][station]=y
+				self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
+				station=station-1
 
 	def readLOWBD(self, name='LOWBD', rcore=0.0, l1def='SKA-low_config_baseline_design_arm_stations_2013apr30.csv'):
 		return self.readCSV(name, rcore, l1def)
@@ -502,7 +495,6 @@ class TelArray:
 			plt.axes().set_xlim([-maxaxis,maxaxis])
 			plt.axes().set_ylim([-maxaxis,maxaxis])
 			plt.savefig('%s_MST.pdf' %self.name)
-			return dist
 		else:
 			dist=0    
 			for edge in edge_list:
