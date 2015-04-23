@@ -16,10 +16,10 @@ hiono=300
 nnoll=200
 
 # Number of sources that can be used for calibration by 35m diameter station
-nsource=6
+nsource=600
 
 # Observing wavelength
-wave=6.0
+wave=3.0
 
 # Diameter of station
 diameter=35.0
@@ -28,18 +28,16 @@ diameter=35.0
 rbase=hiono*wave/diameter
 
 # Radius of pierce points in the ionosphere
-rpierce=2.0*rbase
+rpierce=rbase
 
 # Number of source trials
-nsourcetrials=10
+nsourcetrials=1
 
 # Number of array trials
 ntrials=1000000
 ##########################################################################################
 
 slowbd=numpy.zeros(nnoll)
-
-plt.clf()
 
 # Find the SVD for the Baseline Design. We use this as the reference.	
 lowbd=TelArray()
@@ -48,54 +46,49 @@ slowbd=numpy.zeros(nnoll)
 ts=TelSources()
 tp=TelPiercings()
 for sourcetrial in range(nsourcetrials):
-	ts.construct(nsources=nsource, radius=wave/diameter)
+	ts.construct(nsources=nsource, radius=wave/35.0)
 	print "Number of sources ", nsource, "Trial ", sourcetrial
-	tp.construct(ts,lowbd,hiono=300,rmin=1.8)
+	tp.construct(ts,lowbd,hiono=hiono,rmin=1.8)
 	slowbd=slowbd+(1.0/float(nsourcetrials))*tp.assess(nnoll=nnoll, rmax=rpierce, doplot=False)
-# Scale the x axis to be a pseudo wave number
-scales=numpy.sqrt(numpy.arange(nnoll)/(rpierce*rpierce))
-plt.plot(scales, numpy.sqrt(slowbd/slowbd[0]), color='black')
-print "Zero sqrt(singular value) %s" % numpy.sqrt(slowbd[0])
+	if sourcetrial == 0:
+		tp.plot(rmax=rpierce)
+		
+print "Zero singular value %.3f" % slowbd[0]
 
 # Loop over all trial values for the number of stations
-color={'11':'r', '21': 'g', '31':'b', '41':'yellow', '51':'cyan'}
+srb={}
 for stations in [11, 21, 31, 41, 51]:
+	sname='LOW_RANDOMBOOLARDY_WT%d_wave%.1f_diam%.1f' % (stations, wave, diameter)
 
 # Recalculate all dependent values
-	diameter=35.0*numpy.sqrt(46.0/float(stations))
-	ansource=int(nsource*(35.0/diameter)*(35.0/diameter))
-	print "Station diameter = %s, number of sources = %s" % (diameter, ansource)
+# 	diameter=35.0*numpy.sqrt(46.0/float(stations))
+	print "Wavelength %.2f (m), Station diameter = %.1f (m), number of sources = %d" % (wave, diameter, nsource)
 	rbase=hiono*wave/diameter
-	rpierce=2.0*rbase
-	print "Number of stations = %d, baseline radius = %s, pierce radius= %s" % (stations, rbase, rpierce)
+	rpierce=rbase
+	print "Number of stations = %d, baseline radius = %.3f (km), pierce radius= %.3f (km)" % (stations, rbase, rpierce)
 	ts=TelSources()
-	ts.construct(nsources=ansource, radius=wave/diameter)
+	ts.construct(nsources=nsource, radius=wave/diameter)
 
 	lowrandbool=TelArray()
-	lowrandbool.randomBoolardy('LOW_RANDOMBOOLARDY%d' % stations, nstations=stations, nhalo=stations, rhalo=rbase, diameter=diameter)
+	lowrandbool.randomBoolardy(sname, nstations=stations, nhalo=stations, rhalo=rbase, diameter=diameter)
 	trialconfig=copy.deepcopy(lowrandbool)
 	best=copy.deepcopy(lowrandbool)
 
-# 	trialconfig=TelArray()
-# 	trialconfig.randomBoolardy('LOW_RANDOMBOOLARDY%d' % stations, nstations=stations, nhalo=stations, rhalo=rbase, diameter=diameter)
-# 
-# 	best=TelArray()
-# 	best.randomBoolardy('LOW_RANDOMBOOLARDY%d' % stations, nstations=stations, nhalo=stations, rhalo=rbase, diameter=diameter)
-# 
-	bestDistance=best.distance()
+	bestDistance=best.excessDistance(False)
 	T=0.1*bestDistance
-	print "Initial distance metric = ", bestDistance
+	print "Initial distance metric = %.3f (km)" % bestDistance
 	tp=TelPiercings()
 	tp.construct(ts,best,hiono=hiono,rmin=1.8)
 
-	for trial in range(ntrials):
+	trial=1
+	while trial < ntrials:
 		trialconfig.stations=best.stations.copy()
 		if fresh:
 			trialconfig=TelArray()
-			trialconfig.randomBoolardy('LOW_RANDOMBOOLARDY%d' % stations, nstations=stations, nhalo=stations, rhalo=rbase)
+			trialconfig.randomBoolardy(sname, nstations=stations, nhalo=stations, rhalo=rbase)
 		else:
-			trialconfig.shakehalo(bestDistance/2.0)
-		distance=trialconfig.distance()
+			trialconfig.shakehalo(best.distance()/2.0)
+		distance=trialconfig.excessDistance(False)
 		prob=math.exp(-(bestDistance-distance)/T)
 		rnd=random.uniform(0.0,1.0)
 		if (distance>bestDistance):
@@ -107,21 +100,51 @@ for stations in [11, 21, 31, 41, 51]:
 			print "Trial %d: Accepting worse config  : %.3f -> %.3f" % (trial, bestDistance, distance)
 			bestDistance=distance
 			best.stations=trialconfig.stations.copy()
-	srb=numpy.zeros(nnoll)
+		trial=trial+1
+	srb['%d'%stations]=numpy.zeros(nnoll)
 	for sourcetrial in range(nsourcetrials):
 		ts.construct(nsources=nsource, radius=wave/diameter)
 		print "Number of sources ", nsource, "Trial ", sourcetrial
-		tp.construct(ts,best,hiono=300,rmin=1.8)
-		srb=srb+(1.0/float(nsourcetrials))*tp.assess(nnoll=nnoll, rmax=rpierce, doplot=False)
+		tp.construct(ts,best,hiono=hiono,rmin=1.8)
+		srb['%d'%stations]=srb['%d'%stations]+(1.0/float(nsourcetrials))*tp.assess(nnoll=nnoll, rmax=rpierce, doplot=False)
+		if sourcetrial == 0:
+			tp.plot(rmax=rpierce)
+		
+
 	# Scale the x axis to be a pseudo wave number
-	scales=numpy.sqrt(numpy.arange(nnoll)/(rpierce*rpierce))
-	plt.plot(scales, numpy.sqrt(srb/slowbd[0]), color=color['%d'%stations])
-	print "Zero sqrt(singular value) %s" % numpy.sqrt(srb[0])
-	best.saveCSV('LOW_RANDOMBOOLARDY%d.csv' % stations)
-	best.writeKML('LOW_RANDOMBOOLARDY%d.kml' % stations	)
+	print "Zero Singular value %.3f" % srb['%d'%stations][0]
+	print "Distance %.3f (km) MST %.3f (km)" % (best.distance(), best.mst(False))
+	best.saveCSV('%s.csv' % sname)
+	best.writeKML('%s.kml' % sname)
+	best.plot(rbase, '%s_ARRAY.pdf' % sname)
+	best.mst(True, '%s_MST.pdf' % sname)
 	print " "
-plt.title('Singular values 11, 21, 31, 41, 51, BDv1, %dm' % (wave))
+	
+	
+plt.clf()
+plt.rc('axes', color_cycle=['r', 'g', 'b', 'cyan', 'purple'])
+print "Wavelength %.2f (m), Station diameter = %.1f (m), number of sources = %d" % (wave, diameter, nsource)
+rbase=hiono*wave/35.0
+rpierce=rbase
+scales=numpy.sqrt(numpy.arange(nnoll)/(rpierce*rpierce))
+plt.loglog(scales, slowbd/slowbd[0], color='black')
+
+for stations in [11, 21, 31, 41, 51]:
+# 	diameter=35.0*numpy.sqrt(46.0/float(stations))
+	print "Wavelength %.2f (m), Station diameter = %.1f (m), number of sources = %d" % (wave, diameter, nsource)
+	rbase=hiono*wave/diameter
+	rpierce=rbase
+	scales=numpy.sqrt(numpy.arange(nnoll)/(rpierce*rpierce))
+	plt.loglog(scales, srb['%d'%stations]/slowbd[0])
+
+base=numpy.arange(0.01, 10.0, 0.01)
+phase=numpy.power(14.0*base,-1.8/2.0)
+plt.loglog(base, phase, color='black')
+plt.title('SVD 11, 21, 31, 41, 51, BDv1, %.1f, %.1f' % (wave, diameter))
 plt.xlabel(r'$km^{-1}$')
-plt.ylabel(r'$\sqrt{{\rm Singular value}}$')
-plt.axes().set_xlim([0.0, 0.3])
-plt.savefig('SVD_OPT_wave%sm.pdf' % wave)
+plt.ylabel('Singular value')
+plt.axes().set_xlim([1e-2, 10.0])
+plt.axes().set_ylim([1e-3, 1e1])
+plt.axvline(1.0/numpy.sqrt(hiono*wave/1000.0), color='r', ls='--')
+plt.axvline(1.0/rpierce, color='g', ls='--')
+plt.savefig('SVD_OPT_wave%sm_%.1fm.pdf' % (wave, diameter))

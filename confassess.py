@@ -8,7 +8,7 @@ ts=TelSources()
 nsources=6
 nnoll=200
 diameter=35.0
-wave=3.0
+wave=6.0
 rbase=30.0
 rpierce=rbase+hiono*wave/35.0
 
