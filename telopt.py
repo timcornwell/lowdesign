@@ -173,9 +173,8 @@ class TelArray:
 					self.stations['x'][inhalo]=x
 					self.stations['y'][inhalo]=y
 					inhalo=inhalo+1
-# 		self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)*numpy.ones(self.nstations)
-		self.stations['weight']=float(self.nstations)*numpy.ones(self.nstations)
-		
+ 		self.stations['weight']=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)*numpy.ones(self.nstations)
+#		
 	def circles(self, name='Stations', rhalo=40, rcore=1.0, nstations=512, nhalo=44, fobs=1e8, diameter=35.0):
 		self.mask=TelMask()
 		self.mask.readMask(maskfile='Mask_BoolardyStation.png')
@@ -302,8 +301,8 @@ class TelArray:
 				if r>rcore:
 					self.stations['x'][station]=x
 					self.stations['y'][station]=y
-# 					self.stations['weight'][station]=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
-					self.stations['weight']=float(self.nstations)*numpy.ones(self.nstations)
+					self.stations['weight'][station]=self.diameter*self.diameter*self.diameter*self.diameter*float(self.nstations)
+#					self.stations['weight']=float(self.nstations)*numpy.ones(self.nstations)
 					station=station+1
 
 	def readLOWBD(self, name='LOWBD', rcore=0.0, l1def='SKA-low_config_baseline_design_arm_stations_2013apr30.csv'):
@@ -314,6 +313,20 @@ class TelArray:
 			rowwriter = csv.writer(fp)
 			for station in range(self.nstations):
 				rowwriter.writerow([1000.0*self.stations['x'][station],1000.0*self.stations['y'][station]])
+				
+	def writeWGS84(self, filename='LOWBD.csv'):
+		long0=116.779167
+		lat0=-26.789267
+		height0=300.0
+		Re=6371.0
+		with open(filename, 'wb') as fp:
+			rowwriter = csv.writer(fp)
+			rowwriter.writerow(['name','longitude','latitude','height'])
+			for station in range(self.nstations):
+				name='Low%d'%station
+				long= long0+180.0*(self.stations['x'][station])*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
+				lat = lat0 +180.0*(self.stations['y'][station])*numpy.cos(numpy.pi*lat0/180.0)/(Re*numpy.pi)
+				rowwriter.writerow([name,long,lat,height0])
 				
 	def readLOWL1(self, name='LOWL1', rcore=0.0, l1def='L1_configuration.csv'):
 		self.mask=TelMask()
@@ -444,6 +457,7 @@ class TelArray:
 	
 		long0=116.779167
 		lat0=-26.789267
+		height0=300.0
 		Re=6371.0
 		s=['<?xml version="1.0" encoding="UTF-8"?>', \
 			'<kml xmlns="http://www.opengis.net/kml/2.2">', \
@@ -508,7 +522,7 @@ class TelArray:
 				i, j = edge
 				plt.plot([P[i, 0], P[j, 0]], [P[i, 1], P[j, 1]], c='r')
 				dist=dist+numpy.sqrt((P[i,0]-P[j,0])*(P[i,0]-P[j,0])+(P[i,1]-P[j,1])*(P[i,1]-P[j,1]))
-			plt.title('MST for %s, distance=%.1f km' % (self.name, dist))
+			plt.title('%s, MST=%.1f km' % (self.name, dist))
 			plt.xlabel('X (km)')
 			plt.ylabel('y (km)')
 			plt.axes().set_aspect('equal')
@@ -592,21 +606,34 @@ class TelPiercings:
 		self.npiercings=0
 		self.hiono=400
 	
-	def plot(self, rmax=70):
+	def plot(self, rmax=70, rcore=70):
 		plt.clf()
-		plt.title('Piercings %s' % self.name)
+		plt.title(self.name)
 		plt.xlabel('X (km)')
 		plt.ylabel('Y (km)')
+		r2=self.piercings['x']*self.piercings['x']+self.piercings['y']*self.piercings['y']
+ 		npierce=len(r2>(rmax*rmax))
+ 		print "Number of piercings used = %d" % npierce
+		P=numpy.zeros([npierce,2])
+		P[...,0]=self.piercings['x']
+		P[...,1]=self.piercings['y']
+		distancemat=numpy.sort(sd.pdist(P))
+		iondist=numpy.std(distancemat[:npierce])
+ 		print "Typical distance between piercings = %.1f (km)" % iondist
+ 		print "Typical phase error = %.3f (rad)" % (TelIono().ionosphere(iondist))
 		plt.plot(self.piercings['x'], self.piercings['y'], '.')
 		plt.axes().set_aspect('equal')
 		circ=plt.Circle((0,0), radius=rmax, color='g', fill=False)
 		fig = plt.gcf()
 		fig.gca().add_artist(circ)
+		circcore=plt.Circle((0,0), radius=rcore, color='r', fill=False)
+		fig = plt.gcf()
+		fig.gca().add_artist(circcore)
 		maxaxis=max(numpy.max(abs(self.piercings['x'])), numpy.max(abs(self.piercings['y'])))
 		plt.axes().set_xlim([-maxaxis,maxaxis])
 		plt.axes().set_ylim([-maxaxis,maxaxis])
-		plt.savefig('%s.pdf' % self.name)
-	
+		plt.savefig('%s.pdf' % self.name)	
+		
 	def construct(self, sources, array, rmin=1, hiono=300):
 		self.hiono=hiono
 		r2=array.stations['x']*array.stations['x']+array.stations['y']*array.stations['y']
@@ -623,12 +650,13 @@ class TelPiercings:
 		for source in range(sources.nsources):
 			self.piercings['x'][source*nstations:(source+1)*nstations]=self.hiono*sources.sources['x'][source]+outside['x']
 			self.piercings['y'][source*nstations:(source+1)*nstations]=self.hiono*sources.sources['y'][source]+outside['y']
-#			self.piercings['weight'][source*nstations:(source+1)*nstations]=array.stations['weight']
+			self.piercings['weight'][source*nstations:(source+1)*nstations]=array.stations['weight'][r2>=rmin*rmin]
 		self.piercings['x']=self.piercings['x']-numpy.average(self.piercings['x'])
 		self.piercings['y']=self.piercings['y']-numpy.average(self.piercings['y'])
 
 	def assess(self, rmax=70.0, nnoll=20, doplot=True):
 		A=numpy.zeros([self.npiercings, nnoll])
+		ngood=0
 		for piercing in range(self.npiercings):
 			x=self.piercings['x'][piercing]
 			y=self.piercings['y'][piercing]
@@ -637,20 +665,58 @@ class TelPiercings:
 			phi=numpy.arctan2(y,x)
 			if(r<rmax):
 				for noll in range(nnoll):
-					A[piercing,noll]=weight*zernike.zernikel(noll,r/rmax,phi)
+					A[ngood,noll]=weight*zernike.zernikel(noll,r/rmax,phi)
+				ngood=ngood+1
+		A=A[:ngood,...]
+		print "RMS weight %.2f" % (numpy.sqrt(numpy.average(A*A))/numpy.max(A))
 		Covar_A=numpy.zeros([nnoll, nnoll])
 		for nnol1 in range(nnoll):
 			for nnol2 in range(nnoll):
 				Covar_A[nnol1,nnol2]=numpy.sum(A[...,nnol1]*A[...,nnol2])
 		U,s,Vh = linalg.svd(Covar_A)
 		s=numpy.sqrt(s)
+		
 		if doplot:
 			plt.clf()
-			plt.title('%s rmax=%d' % (self.name, rmax))
+			plt.title('%s rmax=%.1f' % (self.name, rmax))
 			plt.xlabel('Singular vector index')
 			plt.ylabel('Sqrt(Singular value)')
 			plt.plot(s)
-			plt.savefig('%s_rmax=%d_SVD.pdf' % (self.name, rmax))
+			plt.savefig('%s_rmax=%.1f_SVD.pdf' % (self.name, rmax))
+			plt.clf()
+			plt.title('%s rmax=%.1f_U' % (self.name, rmax))
+			plt.ylabel('Nnoll')
+			plt.xlabel('Nnoll')
+			plt.imshow(numpy.sqrt(abs(U)), interpolation='nearest')
+			plt.colorbar()
+			plt.text(150,10,'Max = %.2f' % numpy.max(U))
+			plt.text(150,20,'Min = %.2f' % numpy.min(U))
+			plt.savefig('%s_rmax=%.1f_U.pdf' % (self.name, rmax))
+			plt.clf()
+			plt.title('%s rmax=%.1f_Vh' % (self.name, rmax))
+			plt.xlabel('Nnoll')
+			plt.ylabel('Nnoll')
+			plt.imshow(numpy.sqrt(abs(Vh)), interpolation='nearest')
+			plt.colorbar()
+			plt.text(150,10,'Max = %.2f' % numpy.max(Vh))
+			plt.text(150,20,'Min = %.2f' % numpy.min(Vh))
+			plt.savefig('%s_rmax=%.1f_Vh.pdf' % (self.name, rmax))
+			plt.clf()
+			plt.title('%s rmax=%.1f_A weight=%.2f' % (self.name, rmax, numpy.sqrt(numpy.average(A*A))))
+			plt.xlabel('Nnoll')
+			plt.ylabel('Piercings')
+			plt.imshow(numpy.sqrt(abs(A)), interpolation='nearest')
+			plt.colorbar()
+			plt.savefig('%s_rmax=%.1f_A.pdf' % (self.name, rmax))
+			plt.clf()
+			plt.title('%s rmax=%.1f_CovarA' % (self.name, rmax))
+			plt.ylabel('Nnoll')
+			plt.xlabel('Nnoll')
+			plt.imshow(numpy.sqrt(abs(Covar_A)), interpolation='nearest')
+			plt.colorbar()
+			plt.text(nnoll/2,20,'Max = %.2f' % numpy.max(Covar_A), color='white')
+			plt.text(nnoll/2,40,'Min = %.2f' % numpy.min(Covar_A), color='white')
+			plt.savefig('%s_rmax=%.1f_CovarA.pdf' % (self.name, rmax))
 		return s
 
 class TelIono:
@@ -658,7 +724,7 @@ class TelIono:
 		self.hiono=300
 	
 	def ionosphere(self, baseline):
-		return numpy.power(14.0*baseline,-1.8/2.0)
+		return numpy.power(baseline/14.0,+1.8/2.0)/1.5
 		
 class sources:
 #  From Condon et al 2012
