@@ -19,13 +19,13 @@ nnoll=200
 nsource=40
 
 # Observing wavelength
-wave=3.0
+wave=6.0
 
 # Diameter of station (m)
 diameter=35.0
 
 # Baseline length (radius)
-rbase=25
+rbase=40.0
 
 # Radius of pierce points in the ionosphere
 rpierce=rbase+hiono*wave/(diameter)
@@ -40,7 +40,7 @@ nsourcetrials=1
 ntrials=1000000
 
 # Number of stations
-nstations = 45
+nstations = 25
 
 # Number of core stations
 ncore=0
